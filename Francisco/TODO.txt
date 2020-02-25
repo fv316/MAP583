@@ -1,0 +1,17 @@
+Research- in order of importance:
+1. Variable length RNN inputs. Use masking e.g. Word-2-Vector class example. 
+2. Use downsampling of normal class to achieve better performance.
+3. Create a RNN model using GRU and LSTM.
+4. Try to use data augmentation and visualization.
+5. Research using generative adversarial networks.
+
+
+
+Already done:
+Create a simple 1D-CNN model.
+
+Current results:
+Train - Loss: 0.1812 Acc: 0.9517
+Test - Loss: 0.1368 Acc: 0.9658
+Train - Loss: 0.1189 Acc: 0.9692
+Test - Loss: 0.1372 Acc: 0.9664
