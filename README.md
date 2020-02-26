@@ -1,11 +1,9 @@
-# pytorch-gtsrb
+# pytorch-ecg
 
 This is an illustrative example for a deep learning project in pytorch for the [DL course](https://mlelarge.github.io/dataflowr-web/dldiy.html). We use the [ECG Heartbeat Categorization Dataset](https://www.kaggle.com/shayanfazeli/heartbeat) to show how the code could be structured for easier testing of new architectures and parameters, tracking of results and improving of the models.
 
 ## Data
-The original GTSRB datasets consists of large `.ppm` images of scenes with bounding box coordinates for the traffic signs. We use here a post-processed variant where signs have already been cropped out from their corresponding images and resized to 32 x 32. 
-
-We use a similar set-up with the Udacity course for the data. You can download the zipped data from [Kaggle](https://www.kaggle.com/shayanfazeli/heartbeat) or from [here](https://drive.google.com/file/d/17Rd4YpGwssSpk4xZAT5AyYskjvs95dAY/view?usp=sharing).
+We use a similar set-up with the Udacity course for the data. You can download the zipped data from [here](https://drive.google.com/file/d/17Rd4YpGwssSpk4xZAT5AyYskjvs95dAY/view?usp=sharing).
 
 ## Project structure
 
@@ -15,7 +13,7 @@ The project is structured as following:
 .
 ├── loaders
 |   └── dataset selector
-|   └── gtsrb_loader.py # loading and pre-processing gtsrb data
+|   └── ecg_loader.py # loading and pre-processing ecg data
 ├── models
 |   └── architecture selector
 |   └── lenet.py # classical CNN
