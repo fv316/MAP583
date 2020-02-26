@@ -1,10 +1,11 @@
-Research- in order of importance:
-1. Variable length RNN inputs. Use masking e.g. Word-2-Vector class example. 
-2. Use downsampling of normal class to achieve better performance.
-3. Create a RNN model using GRU and LSTM.
-4. Try to use data augmentation and visualization.
-5. Research using generative adversarial networks.
-
+Research- in order of importance-ish:
+Variable length RNN inputs. Use masking e.g. Word-2-Vector class example. 
+Use downsampling of normal class to achieve better performance.
+Create a RNN model using GRU and LSTM.
+Visualize the ROC curve and F1 scores.
+Try to use data augmentation and visualization.
+Research using generative adversarial networks.
+Apply new loss functions.
 
 
 Already done:
