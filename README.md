@@ -1,4 +1,5 @@
 # pytorch-ecg
+The directory has not yet been adapted to the ECG dataset and currently is a copy of the github project that can be found [here](https://github.com/abursuc/dldiy-gtsrb). In fact, even this README is not completely updated to the ECG dataset.
 
 This is an illustrative example for a deep learning project in pytorch for the [DL course](https://mlelarge.github.io/dataflowr-web/dldiy.html). We use the [ECG Heartbeat Categorization Dataset](https://www.kaggle.com/shayanfazeli/heartbeat) to show how the code could be structured for easier testing of new architectures and parameters, tracking of results and improving of the models.
 
