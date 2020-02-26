@@ -84,9 +84,9 @@ class Experiment(object):
         xp.logged        = var_dict['logged']
         
         if 'info' in var_dict:
-            xp.info          = var_dict['info']
-        xp.options       = var_dict['options']
-        xp.name          = var_dict['name']
+            xp.info = var_dict['info']
+        xp.options = var_dict['options']
+        xp.name = var_dict['name']
         return xp
 
 

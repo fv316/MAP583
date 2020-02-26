@@ -2,8 +2,6 @@ import time
 import os
 import numpy as np
 import torch
-from PIL import Image
-import imageio
 
 from toolbox import utils, metrics
 
@@ -27,7 +25,7 @@ def train(args, train_loader, model, criterion, optimizer, logger, epoch,
     meters_params['learning_rate'].update(optimizer.param_groups[0]['lr'])
     end = time.time()
 
-    for i, (input, target_class) in enumerate(train_loader):
+    for i, (input, target_class, name) in enumerate(train_loader):
         # print(f'{i} - {input.size()} - {target_class.size()}')
         batch_size = input.size(0)
 
@@ -127,7 +125,7 @@ def validate(args, val_loader, model, criterion, logger, epoch, eval_score=None,
                 _, pred = torch.max(output, 1)
 
                 for idx, curr_name in enumerate(name):
-                    res_list[curr_name] = [pred[idx].item(), target_class[idx].item()]
+                    res_list[curr_name.item()] = [pred[idx].item(), target_class[idx].item()]
 
                 pred = pred.to('cpu').data.numpy()
                 hist += metrics.fast_hist(pred.flatten(), label.flatten(), args.num_classes)
@@ -140,10 +138,8 @@ def validate(args, val_loader, model, criterion, logger, epoch, eval_score=None,
 
             # save samples from first mini-batch for qualitative visualization
             if i == 0:
-               utils.save_res_grid(input.detach().to('cpu').clone(), val_loader, pred, 
-                        target_class.to('cpu').clone(), 
-                        out_fn=os.path.join(args.log_dir,'pics', '{}_watch_mosaic_pred_labels.jpg'.format(args.name)))
-
+                pass
+                # utils.save_res_grid
 
             if i % print_freq == 0:
                 print('Validation: [{0}/{1}]\t'
@@ -169,9 +165,9 @@ def validate(args, val_loader, model, criterion, logger, epoch, eval_score=None,
                                        meters['meanIoU'].val, meters['fwavacc'].val ))
 
     logger.log_meters('val', n=epoch)
-    
+    print(res_list)
     utils.save_res_list(res_list, os.path.join(args.res_dir, 'val_results_list_ep{}.json'.format(epoch)))
-        
+    
     if args.tensorboard:
         tb_writer.add_scalar('acc1/val', meters['acc1'].avg, epoch)
         tb_writer.add_scalar('loss/val', meters['loss'].avg, epoch)
@@ -179,9 +175,7 @@ def validate(args, val_loader, model, criterion, logger, epoch, eval_score=None,
         tb_writer.add_scalar('acc_class/val', meters['acc_class'].val, epoch)
         tb_writer.add_scalar('meanIoU/val', meters['meanIoU'].val, epoch)
         tb_writer.add_scalar('fwavacc/val', meters['fwavacc'].val, epoch)
-        im = imageio.imread('{}'.format(os.path.join(args.log_dir,'pics', '{}_watch_mosaic_pred_labels.jpg'.format(args.name))))
-        tb_writer.add_image('Image', im.transpose((2, 0, 1)), epoch)
-        
+
     return meters['mAP'].val, meters['loss'].avg, res_list
 
 

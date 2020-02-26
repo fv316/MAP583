@@ -3,8 +3,6 @@ Custom optimizers
 '''
 
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
 
 EPS = 1e-7
 
@@ -30,7 +28,7 @@ def get_optimizer(args, model):
 
     if 'StepLR' == args.scheduler:
         print(f' --- Setting lr scheduler to StepLR ---')
-        return torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.step, gamma=args.lr_decay)
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.step, gamma=args.lr_decay)
     elif 'ExponentialLR' == args.scheduler:
         print(f' --- Setting lr scheduler to ExponentialLR ---')
         scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=args.lr_decay)    

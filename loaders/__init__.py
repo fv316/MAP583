@@ -1,4 +1,4 @@
-from loaders.gtsrb_loader import GTSRBLoader
+from loaders.ecg_loader import ECGLoader
 
 def get_loader(args):
     """get_loader
@@ -6,6 +6,5 @@ def get_loader(args):
     :param name:
     """
     return {
-        'gtsrb' : GTSRBLoader,
-        # feel free to add new datasets here
+        'ecg' : ECGLoader,
     }[args.dataset]

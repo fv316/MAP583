@@ -12,7 +12,7 @@ import torch
 from loaders import get_loader
 from models import get_model
 from toolbox import utils, logger, metrics, losses, optimizers
-import trainer as trainer
+import trainer
 from args import parse_args
 
 from torch.utils.tensorboard import SummaryWriter
@@ -133,10 +133,10 @@ def main():
     # init data loaders
     loader = get_loader(args)
     train_loader = torch.utils.data.DataLoader(loader(data_dir=args.data_dir,split='train', 
-        phase='train', num_classes=args.num_classes, crop_size=args.crop_size), 
+        phase='train', num_classes=args.num_classes), 
         batch_size=args.batch_size, shuffle=True, num_workers=args.workers, pin_memory=True)
     val_loader = torch.utils.data.DataLoader(loader(data_dir=args.data_dir, split='val',
-        phase='test', out_name=True, num_classes=args.num_classes), batch_size=args.batch_size,
+        phase='test', num_classes=args.num_classes), batch_size=args.batch_size,
         shuffle=False, num_workers=args.workers, pin_memory=True)
 
     exp_logger, lr = None, None
@@ -164,7 +164,7 @@ def main():
 
     if args.test:
         test_loader = torch.utils.data.DataLoader(loader(data_dir=args.data_dir, split='test', 
-            phase='test', out_name=True, num_classes=args.num_classes), batch_size=args.batch_size,
+            phase='test', num_classes=args.num_classes), batch_size=args.batch_size,
             shuffle=False, num_workers=args.workers, pin_memory=True)
         trainer.test(args, test_loader, model, criterion, args.start_epoch, 
             eval_score=metrics.accuracy_classif, output_dir=args.out_pred_dir, has_gt=True)
