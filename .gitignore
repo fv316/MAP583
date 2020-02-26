@@ -1,3 +1,5 @@
 ecg_data/
 .vscode/
 __pycache__/
+venv/
+.ipynb_checkpoints/
