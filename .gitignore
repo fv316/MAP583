@@ -1,2 +1,4 @@
 ecg_data/
 .vscode/
+venv/
+.ipynb_checkpoints/
