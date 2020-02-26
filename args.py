@@ -9,10 +9,10 @@ def parse_args():
 
     #  experiment settings
     # name of the experiment
-    parser.add_argument('--name', default='gtrb_resnet', type=str,
+    parser.add_argument('--name', default='ecg_cnn1d', type=str,
                         help='name of experiment')
     # name of dataset used in the experiment, e.g. gtsrd
-    parser.add_argument('--dataset', default='gtsrb', type=str,
+    parser.add_argument('--dataset', default='ecg', type=str,
                         help='name of dataset to train upon')
     parser.add_argument('--test', dest='test', action='store_true', default=False,
                         help='To only run inference on test set')
@@ -22,21 +22,19 @@ def parse_args():
    
     # model settings
     parser.add_argument('--arch', type=str,
-                        help='type of architecture to be used, e.g. resnet')
+                        help='type of architecture to be used, e.g. cnn1d')
     parser.add_argument('--model-name', type=str,
-                        help='type of model to be used. Particular instance of a given architecture, e.g. resnet18')    
+                        help='type of model to be used. Particular instance of a given architecture, e.g. cnn1d_3')    
     parser.add_argument('--resume', default='', type=str, metavar='PATH',
-                        help='which checkpoint to resume from. possible values["latest", "best", epoch]')
+                        help='which checkpoint to resume from possible values ["latest", "best", epoch]')
     parser.add_argument('--pretrained', action='store_true',
                         default=False, help='use pre-trained model')
 
     # data settings
     parser.add_argument('--num-classes', default=0, type=int)
-    parser.add_argument('--input-channels', default=3, type=int)
-    # size of images to be fed to the CNN
-    parser.add_argument('-s', '--crop-size', default=0, type=int)
+    parser.add_argument('--input-channels', default=1, type=int)
     # number of workers for the dataloader
-    parser.add_argument('-j', '--workers', type=int, default=4)
+    parser.add_argument('-j', '--workers', type=int, default=1)
 
     # training settings
     parser.add_argument('--start-epoch', type=int, default=1)

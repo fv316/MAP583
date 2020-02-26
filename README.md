@@ -1,5 +1,5 @@
 # pytorch-ecg
-The directory has not yet been adapted to the ECG dataset and currently is a copy of the github project that can be found [here](https://github.com/abursuc/dldiy-gtsrb). In fact, even this README is not completely updated to the ECG dataset.
+The directory has not yet been adapted to the ECG dataset and currently is a copy of the github project that can be found [here](https://github.com/abursuc/dldiy-gtsrb). In fact, even this README is not completely updated to the ECG dataset. See the [TODO list](https://github.com/fv316/MAP583/blob/master/Francisco/TODO.txt) for next steps.
 
 This is an illustrative example for a deep learning project in pytorch for the [DL course](https://mlelarge.github.io/dataflowr-web/dldiy.html). We use the [ECG Heartbeat Categorization Dataset](https://www.kaggle.com/shayanfazeli/heartbeat) to show how the code could be structured for easier testing of new architectures and parameters, tracking of results and improving of the models.
 
@@ -15,11 +15,13 @@ The project is structured as following:
 ├── loaders
 |   └── dataset selector
 |   └── ecg_loader.py # loading and pre-processing ecg data
+|   └── gdd.py # loading data from google drive
 ├── models
 |   └── architecture selector
 |   └── lenet.py # classical CNN
 |   └── resnet.py # relatively recent CNN 
 |   └── squeezenet.py # highly compressed CNN
+|   └── cnn1d.py # classical 1 dimensional CNN
 ├── toolbox
 |   └── optimizer and losses selectors
 |   └── logger.py  # keeping track of most results during training and storage to static .html file
@@ -43,6 +45,9 @@ Here is a typical launch command and some comments:
   + if you want to use your model only for evaluation on the test set, add the `--test` flag.
   + when using _resnet_ you should upsample the input images to ensure compatibility. To this end set `--crop-size 64`
  
+Here is an actual typical launch command and some comments:
+- `python commander.py --dataset ecg --name ecg_trial1.5_bsz128 --epochs 2 --num-classes 5 --root-dir ecg_data --arch cnn1d --model-name cnn1d_3 --batch-size 128 --tensorboard`
+
 ## Output
 For each experiment a folder with the same name is created in the folder `root-dir/gtsrb/runs`
  This folder contains the following items:

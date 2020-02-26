@@ -16,3 +16,6 @@ Train - Loss: 0.1812 Acc: 0.9517
 Test - Loss: 0.1368 Acc: 0.9658
 Train - Loss: 0.1189 Acc: 0.9692
 Test - Loss: 0.1372 Acc: 0.9664
+
+
+python commander.py --dataset ecg --name ecg_trial1.5_bsz128 --epochs 2 --num-classes 5 --root-dir ecg_data --arch cnn1d --model-name cnn1d_3 --batch-size 128 --tensorboard
