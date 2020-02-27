@@ -32,15 +32,15 @@ Test - Loss: 0.1372 Acc: 0.9664
 
 - pour votre presentation, il faut imperativement:
 
-+ presenter brievement la tache de learning.
+    + presenter brievement la tache de learning.
 
-+ presenter le dataset utilise avec qq statistiques.
+    + presenter le dataset utilise avec qq statistiques.
 
-+ decrire l'architecture du reseau ou des reseaux en donnant les references explicites.
+    + decrire l'architecture du reseau ou des reseaux en donnant les references explicites.
 
-+ donner qq resultats obtenus et les comparer a une baseline, aux resultats dans les papiers... Donner des resultats quantitatifs (avec les metriques propres a votre tache) et qualitatifs. Si les resultats vous semblent mauvais, donner des exemples qui vous permettent de voir les causes possibles et donc les ameliorations si vous aviez plus de temps...
+    + donner qq resultats obtenus et les comparer a une baseline, aux resultats dans les papiers... Donner des resultats quantitatifs (avec les metriques propres a votre tache) et qualitatifs. Si les resultats vous semblent mauvais, donner des exemples qui vous permettent de voir les causes possibles et donc les ameliorations si vous aviez plus de temps...
 
-+ prevoir qq minutes pour les questions
+    + prevoir qq minutes pour les questions
 
 A priori, le plus simple est pour chaque equipe de presenter avec son laptop, il faut une prise VGA ou HDMI.
 
