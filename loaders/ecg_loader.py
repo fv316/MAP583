@@ -5,10 +5,10 @@ import pandas as pd
 from loaders.gdd import GoogleDriveDownloader
 # from gdd import GoogleDriveDownloader
 import pathlib
-
+import shutil
 
 GOOGLE_FILE_ID = '17Rd4YpGwssSpk4xZAT5AyYskjvs95dAY'
-ZIP_NAME = r'../ecg_zip.zip'
+ZIP_NAME = 'ecg_zip.zip'
 
 
 idx2label = {
@@ -55,22 +55,25 @@ class ECGLoader(torch.utils.data.Dataset):
 
 
     def read_lists(self):
-        path = None
+        data_sets = ['mitbih_train.csv', 'mitbih_test.csv']
+        
         if self.split == 'train':
-            path = os.path.join(self.data_dir, 'mitbih_train.csv')
+            path = os.path.join(self.data_dir, data_sets[0])
         elif self.split == 'val':
-            path = os.path.join(self.data_dir, 'mitbih_test.csv')
+            path = os.path.join(self.data_dir, data_sets[1])
         else:
             raise Exception('Please chose a valid split type from ["train", "val"]')            
-            
+
         if not os.path.exists(path):
-            parent_path = os.path.join(pathlib.Path(self.data_dir).parent, 'ecg_zip.zip')            
-            name = os.path.basename(self.data_dir)
+            parent_path = pathlib.Path(self.data_dir).parent
+            name = os.path.basename(self.data_dir) # always ecg
 
             GoogleDriveDownloader.download_file_from_google_drive(
-                file_id=GOOGLE_FILE_ID, dest_path=parent_path, unzip=True, showsize=True, del_zip=True)
+                file_id=GOOGLE_FILE_ID, dest_path=os.path.join(parent_path, ZIP_NAME), unzip=True, showsize=True, del_zip=True)
             
-            os.rename(os.path.join(pathlib.Path(self.data_dir).parent, 'ecg_data'), 
-                      os.path.join(pathlib.Path(self.data_dir).parent, name))
-
+            extracted_folder = os.path.join(parent_path, 'ecg_data')
+            for i in data_sets:  
+                shutil.move(os.path.join(extracted_folder, i), os.path.join(parent_path, name))
+            os.rmdir(extracted_folder)
+            
         self.data = pd.read_csv(path)

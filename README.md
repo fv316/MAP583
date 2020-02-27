@@ -45,6 +45,7 @@ Here is a typical launch command and some comments:
   + if you want to use your model only for evaluation on the test set, add the `--test` flag.
   + when using _resnet_ you should upsample the input images to ensure compatibility. To this end set `--crop-size 64`
  
+
 Here are some actual typical launch commands:
 - `python commander.py --dataset ecg --name ecg_cnn1d_3_optsgd_lr1e-2_lrStep0.5_bsz128 --epochs 20 --num-classes 5 --root-dir ecg_data --arch cnn1d --model-name cnn1d_3 --batch-size 128 --tensorboard`
 
