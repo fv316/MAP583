@@ -23,7 +23,7 @@ Test - Loss: 0.1372 Acc: 0.9664
 ## example cli commands
 - python commander.py --dataset ecg --name ecg_trial1.5_bsz128 --epochs 2 --num-classes 5 --root-dir ecg_data --arch cnn1d --model-name cnn1d_3 --batch-size 128 --tensorboard
 
-- python commander.py --dataset ecg --name ecg_trial1.5_bsz128 --epochs 2 --num-classes 5 --root-dir ecg_data --arch cnn1d --model-name cnn1d_3 --batch-size 128 --tensorboard --short-run
+- python commander.py --dataset ecg --name ecg_trial3.5_bsz128 --epochs 2 --num-classes 5 --root-dir ecg_data --arch cnn1d --model-name cnn1d_3 --batch-size 128 --lr 0.001 --scheduler ReduceLROnPlateau --optimizer adam --tensorboard 
 
 ## directives for presentation
 - chaque equipe a 10 minutes de presentations en incluant les questions. Vous assistez a toutes les presentations des autres projets et pourrez poser des questions. Toute l'equipe doit etre presente pour la presentation.
