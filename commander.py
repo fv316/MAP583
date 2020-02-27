@@ -212,7 +212,7 @@ def main():
     if args.tensorboard:
         tb_writer.close()
 
-    print("That's all folks!")
+    print("Scripts have run successfully")
 
 
 
