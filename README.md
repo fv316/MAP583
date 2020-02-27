@@ -45,8 +45,12 @@ Here is a typical launch command and some comments:
   + if you want to use your model only for evaluation on the test set, add the `--test` flag.
   + when using _resnet_ you should upsample the input images to ensure compatibility. To this end set `--crop-size 64`
  
-Here is an actual typical launch command and some comments:
-- `python commander.py --dataset ecg --name ecg_trial1.5_bsz128 --epochs 2 --num-classes 5 --root-dir ecg_data --arch cnn1d --model-name cnn1d_3 --batch-size 128 --tensorboard`
+
+Here are some actual typical launch commands:
+- `python commander.py --dataset ecg --name ecg_cnn1d_3_optsgd_lr1e-2_lrStep0.5_bsz128 --epochs 20 --num-classes 5 --root-dir ecg_data --arch cnn1d --model-name cnn1d_3 --batch-size 128 --tensorboard`
+
+- `python commander.py --dataset ecg --name ecg_cnn1d_3_optadam_lr1e-3_lrReducePlateau0.5_bsz128 --epochs 20 --num-classes 5 --root-dir ecg_data --arch cnn1d --model-name cnn1d_3 --batch-size 128 --lr 0.001 --scheduler ReduceLROnPlateau --optimizer adam --tensorboard`
+
 
 ## Output
 For each experiment a folder with the same name is created in the folder `root-dir/gtsrb/runs`
@@ -63,5 +67,4 @@ For each experiment a folder with the same name is created in the folder `root-d
  ```
 
 ### Tensorboard
-In order the visualize metrics and results in tensorboard you need to launch it separately: `tensorboard --logdir /root-dir/gtsrb/runs`. You can then access tensorboard in our browser at [localhost:6006](localhost:6006)
-If you have performed multiple experiments, tensorboard will aggregate them in the same dashboard.
+In order the visualize metrics and results in tensorboard you need to launch it separately (from the project directory): `tensorboard --logdir ecg_data/ecg/runs`. You can then access tensorboard in our browser at [localhost:6006](localhost:6006). If you have performed multiple experiments, tensorboard will aggregate them in the same dashboard. To check if any tensorboard runs exist run `tensorboard --inspect --logdir ecg_data/ecg/runs`
