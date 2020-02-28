@@ -5,6 +5,8 @@ This directory has been adapted from the github project [dldiy-gtsrb](https://gi
 
 
 ## Data
+Click on the links to interactively visualise the data distribution [pie chart](https://htmlpreview.github.io/?https://github.com/fv316/MAP583/blob/ecg_fran1/Francisco/graphs/pie.html) or the [ECG signal by category]. 
+
 The zipped data can download from [here](https://drive.google.com/file/d/17Rd4YpGwssSpk4xZAT5AyYskjvs95dAY/view?usp=sharing). Note that on running the `commander.py` script for the first time, the data is automatically downloaded, unzipped, and saved for future use.
 
 
