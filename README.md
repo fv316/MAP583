@@ -1,5 +1,5 @@
 # pytorch-ecg
-This is the project directory for Projet group 4: Healthcare (ECG & cardiology) for the [DL course @ école polytechnique](https://mlelarge.github.io/dataflowr-web/). For this project the MIT-BIH Arrhythmia Dataset is used, it is available on Kaggle: [ECG Heartbeat Categorization Dataset](https://www.kaggle.com/shayanfazeli/heartbeat).
+This is the project directory for Projet group 4: Healthcare (ECG & cardiology) for the [DL course @ école polytechnique](https://mlelarge.github.io/dataflowr-web/). For this project the MIT-BIH Arrhythmia Dataset is used and it is available on Kaggle [ECG Heartbeat Categorization Dataset](https://www.kaggle.com/shayanfazeli/heartbeat) and on Google drive [here](https://drive.google.com/file/d/17Rd4YpGwssSpk4xZAT5AyYskjvs95dAY/view?usp=sharing).
 
 This directory has been adapted from the github project [dldiy-gtsrb](https://github.com/abursuc/dldiy-gtsrb). Visit the link to see how a directry could be structured for easier testing of new architectures and parameters, tracking of results and improving of the models. View the [Directives list](https://github.com/fv316/MAP583/blob/master/Francisco/Directives.txt) for next steps and grading instructions.
 
@@ -60,9 +60,8 @@ Here are some more typical launch commands:
 - `python commander.py --dataset ecg --name ecg_resnet1d_10_optadam_lr1e-3_lrReducePlateau0.5_bsz128 --epochs 20 --num-classes 5 --root-dir ecg_data --arch resnet1d --model-name resnet1d_10 --batch-size 128 --lr 0.001 --scheduler ReduceLROnPlateau --optimizer sgd --tensorboard`
 
 
-## Output
-For each experiment a folder with the same name is created in the folder `root-dir/ecg/runs`
- This folder contains the following items:
+## Results
+For each experiment a folder with the same name is created in the folder `root-dir/ecg/runs`. This folder contains the following items:
 
 ```bash
 .
@@ -76,8 +75,3 @@ For each experiment a folder with the same name is created in the folder `root-d
 
 ### Tensorboard
 In order the visualize metrics and results in tensorboard you need to launch it separately (from the project directory): `tensorboard --logdir ecg_data/ecg/runs`. You can then access tensorboard in our browser at [localhost:6006](localhost:6006). If you have performed multiple experiments, tensorboard will aggregate them in the same dashboard. To check if any tensorboard runs exist run `tensorboard --inspect --logdir ecg_data/ecg/runs`
-
-
-## Results
-
-
