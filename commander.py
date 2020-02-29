@@ -111,7 +111,6 @@ o888o o888o o888o `Y888""8o o888o o888o o888o
 
 
 def main():
-    global args, best_score, best_epoch
     best_score, best_epoch = -1, -1
     if len(sys.argv) > 1:
         args = parse_args()
@@ -130,9 +129,15 @@ def main():
 
     # init data loaders
     loader = get_loader(args)
-    train_loader = torch.utils.data.DataLoader(loader(data_dir=args.data_dir,split='train', 
-        phase='train', num_classes=args.num_classes), 
-        batch_size=args.batch_size, shuffle=True, num_workers=args.workers, pin_memory=True)
+    train_data = loader(data_dir=args.data_dir, split='train', phase='train', num_classes=args.num_classes)
+    sample_method = None
+    if args.sampler:
+        weights = train_data.get_sampler_weights(args.sampler)
+        sample_method = torch.utils.data.WeightedRandomSampler(weights, len(train_data))
+
+    train_loader = torch.utils.data.DataLoader(train_data, batch_size=args.batch_size, 
+        shuffle=False if args.sampler else True, num_workers=args.workers, pin_memory=True, 
+        sampler=sample_method)
     val_loader = torch.utils.data.DataLoader(loader(data_dir=args.data_dir, split='val',
         phase='test', num_classes=args.num_classes), batch_size=args.batch_size,
         shuffle=False, num_workers=args.workers, pin_memory=True)
@@ -174,7 +179,7 @@ def main():
        
         trainer.train(args, train_loader, model, criterion, optimizer, exp_logger, epoch,
               eval_score=metrics.accuracy_classif, tb_writer=tb_writer)
-         
+    
         # evaluate on validation set
         mAP, val_loss, res_list = trainer.validate(args, val_loader, model, criterion, exp_logger, epoch, eval_score=metrics.accuracy_classif, tb_writer=tb_writer)
 

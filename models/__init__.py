@@ -27,6 +27,7 @@ def get_model(args):
 
     return model
 
+
 def _get_model_instance(name):
     return {
         'resnet': resnet,

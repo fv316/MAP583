@@ -4,7 +4,7 @@ import numpy as np
 import torch
 
 from toolbox import utils, metrics, plotter
-from loaders.ecg_loader import classnames
+
 
 '''
     .                       o8o
@@ -257,6 +257,7 @@ def test(args, eval_data_loader, model, criterion, epoch, eval_score=None,
     metrics.save_meters(meters, os.path.join(output_dir, 'test_results_ep{}.json'.format(epoch)), epoch)    
     utils.save_res_list(res_list, os.path.join(output_dir, 'test_results_list_ep{}.json'.format(epoch)))    
 
-    plotter.plot_confusion_matrix(np.array(meters["confusion_matrix"].value()), classnames, os.path.join(output_dir, 'test_norm_cm_ep{}.png'.format(epoch)), normalize=True, title='Normalized Confusion Matrix')
-    plotter.plot_confusion_matrix(np.array(meters["confusion_matrix"].value()), classnames, os.path.join(output_dir, 'test_cm_ep{}.png'.format(epoch)), normalize=False, title='Confusion Matrix')
+    # TODO: add class names
+    plotter.plot_confusion_matrix(np.array(meters["confusion_matrix"].value()), ['0','1','2','3','4'], os.path.join(output_dir, 'test_norm_cm_ep{}.png'.format(epoch)), normalize=True, title='Normalized Confusion Matrix')
+    plotter.plot_confusion_matrix(np.array(meters["confusion_matrix"].value()), ['0','1','2','3','4'], os.path.join(output_dir, 'test_cm_ep{}.png'.format(epoch)), normalize=False, title='Confusion Matrix')
 

@@ -57,8 +57,10 @@ def parse_args():
                         metavar='lrd', help='learning rate decay (default: 0.995)')
     parser.add_argument('--criterion', default='nll', type=str,
                         help='criterion to optimize')
-    parser.add_argument('--class-balance', default=None, type=str,
-                        help='class balancing scheme')
+    parser.add_argument('--class-balance', default=None, type=str, metavar='cb',
+                        help='class balancing scheme, cannot be used with sampler')
+    parser.add_argument('--sampler', default=None, type=str, metavar='sampling',
+                        help='sampling scheme, chose from ["equal", "importance"], cannot be used with class-balance')
     # misc settings
     parser.add_argument('--seed', type=int, default=42, metavar='S',
                         help='random seed (default: 42)')
@@ -82,6 +84,7 @@ def parse_args():
 
     assert args.data_dir is not None
     assert args.num_classes > 0
+    assert not (args.sampler and args.class_balance)
 
     print(' '.join(sys.argv))
     print(args)

@@ -16,10 +16,14 @@ idx2label = {
     1: 'Artial Premature',
     2: 'Premature ventricular contraction',
     3: 'Fusion of ventricular and normal',
-    4: 'Undetermined'
+    4: 'Unknown'
 }
 
-classnames = ['Normal','Artial Premature','Premature ventricular contraction','Fusion of ventricular and normal','Undertermined']
+
+# class names and short hand class names
+classnames = ['Normal','Artial Premature','Premature ventricular contraction','Fusion of ventricular and normal','Unknown']
+sh_classnames = ['Normal','PAC','PVC','Fusion','Unknown']
+class_importance = [1,2,2,2,1]
 
 
 class ECGLoader(torch.utils.data.Dataset):
@@ -32,11 +36,12 @@ class ECGLoader(torch.utils.data.Dataset):
         self.phase = split if phase is None else phase
         self.idx2label = idx2label
         self.classnames = classnames
+        self.sh_classnames = sh_classnames
         self.transform = custom_transforms
         self.num_classes = num_classes
-        self.data, self.ecg_list, self.label_list = None, None, None
-        self.read_lists()
+        self.data, self.sampler = None, None
 
+        self.read_lists()
 
     def __getitem__(self, index : int):
         ecg = self.data.iloc[index, :-1].values.astype(np.float32).reshape((1, 187))
@@ -63,7 +68,7 @@ class ECGLoader(torch.utils.data.Dataset):
         elif self.split == 'val' or self.split == 'test':
             path = os.path.join(self.data_dir, data_sets[1])
         else:
-            raise Exception('Please chose a valid split type from [train, val, test]')            
+            raise Exception('Please chose a valid split type from ["train", "val", "test"]')            
 
         if not os.path.exists(path):
             parent_path = pathlib.Path(self.data_dir).parent
@@ -77,4 +82,30 @@ class ECGLoader(torch.utils.data.Dataset):
                 shutil.move(os.path.join(extracted_folder, i), os.path.join(parent_path, name))
             os.rmdir(extracted_folder)
             
-        self.data = pd.read_csv(path)
+        self.data = pd.read_csv(path, header=None)
+
+
+    def get_sampler_weights(self, sampler):
+        self.sampler = sampler
+
+        labels = self.data[187].astype(int) # pandas time series type
+        repartition = labels.value_counts()
+        inverse_repartition = [1./repartition[i] for i in range(5)]
+        weights = np.zeros(len(self.data))
+
+        label_importance = self._get_label_importance()
+        for i, j in enumerate(labels.values):
+            weights[i] = inverse_repartition[j] * label_importance[j]
+
+        return weights
+
+    def _get_label_importance(self):
+
+        if self.sampler == 'equal':
+            l_importance = [1,1,1,1,1,1]
+        elif self.sampler == 'importance':
+            l_importance = class_importance
+        else:
+            raise 'Sampling strategy {} not available'.format(self.sampler)
+        
+        return l_importance

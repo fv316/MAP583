@@ -71,21 +71,28 @@ def plot_confusion_matrix(cm, classnames, out_fn,
         print('Confusion matrix, without normalization')
 
     fig, ax = plt.subplots()
-    plt.imshow(cm, interpolation='nearest', cmap=cmap, shape=(15000,15000),extent=[0, len(classnames), len(classnames), 0])
-    plt.title(title)
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title, fontsize= 20)
+    plt.ylabel('True label', fontsize= 10)
+    plt.xlabel('Predicted label', fontsize= 10)
     plt.colorbar()
-    plt.grid(True)
     tick_marks = np.arange(len(classnames))
-    # plt.xticks(tick_marks, classnames, rotation=90)
-    # plt.yticks(tick_marks, classnames)
 
-    ax.set_xticks(tick_marks)
-    ax.set_xticklabels(classnames, rotation=90, fontsize=5)
-    ax.set_yticks(tick_marks)
-    ax.set_yticklabels(classnames, fontsize=5)
+    plt.xticks(tick_marks, classnames, rotation=0, fontsize = 8)
+    plt.yticks(tick_marks, classnames, rotation=0, fontsize = 8)
 
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
+    #ax.set_xticks(tick_marks)
+    #ax.set_xticklabels(classnames, rotation=45, fontsize=5)
+    #ax.set_yticks(tick_marks)
+    #ax.set_yticklabels(classnames, rotation=45, fontsize=5)
+
+    formating = '.2f' if normalize else 'd'
+    thresh = cm.max() / 2.
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, format(cm[i, j], formating),
+                horizontalalignment="center",
+                color="white" if cm[i, j] > thresh else "black")
+
     print(f'saving plot to {out_fn}')
     plt.savefig(out_fn, bbox_inches='tight', dpi=300)
     plt.gcf().clear()
