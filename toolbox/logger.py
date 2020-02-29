@@ -8,6 +8,7 @@ import json
 import os
 import shutil
 from collections import defaultdict
+import sys
 
 '''
 Object of the Experiment class keep track of scores and metrics across epochs.
@@ -67,7 +68,11 @@ class Experiment(object):
         return self.meters[tag][name]
 
     def to_json(self, filename):
-        os.system('mkdir -p ' + os.path.dirname(filename))
+        if not os.path.exists(os.path.dirname(filename)):
+            if sys.platform.startswith('win32'):
+                os.mkdir(os.path.dirname(filename)) 
+            else:
+                os.system('mkdir -p ' + os.path.dirname(filename))
         var_dict = copy.copy(vars(self))
         var_dict.pop('meters')
         for key in ('viz', 'viz_dict'):

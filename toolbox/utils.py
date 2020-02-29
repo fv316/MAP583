@@ -29,6 +29,7 @@ def init_output_env(args):
     check_dir(args.log_dir)
     check_dir(os.path.join(args.log_dir,'pics'))
     check_dir(os.path.join(args.log_dir,'tensorboard'))
+    check_dir(os.path.join(args.log_dir,'pred'))
     # check_dir(os.path.join(args.log_dir, 'watch'))
     check_dir(args.res_dir)
     with open(os.path.join(args.log_dir, 'config.json'), 'w') as f:

@@ -3,7 +3,8 @@ import os
 import numpy as np
 import torch
 
-from toolbox import utils, metrics
+from toolbox import utils, metrics, plotter
+from loaders.ecg_loader import classnames
 
 '''
     .                       o8o
@@ -219,14 +220,14 @@ def test(args, eval_data_loader, model, criterion, epoch, eval_score=None,
                 meters['confusion_matrix'].update(pred.squeeze(), buff_label.type(torch.LongTensor))
 
                 _, pred = torch.max(output, 1)
-                pred = pred.cpu().data.numpy()
+
+                for idx, curr_name in enumerate(name):
+                    res_list[curr_name.item()] = [pred[idx].item(), target_class[idx].item()]
+
+                pred = pred.to('cpu').data.numpy()
                 hist += metrics.fast_hist(pred.flatten(), label.flatten(), args.num_classes)
                 mean_ap = round(np.nanmean(metrics.per_class_iu(hist)) * 100, 2)
                 meters['mAP'].update(mean_ap, n=batch_size)
-
-
-                for idx, curr_name in enumerate(name):
-                    res_list[curr_name] = [pred[idx].item(), target_class[idx].item()]
 
             end = time.time()
             meters['batch_time'].update(time.time() - end, n=batch_size)
@@ -253,7 +254,9 @@ def test(args, eval_data_loader, model, criterion, epoch, eval_score=None,
 
         print(' * Test set: Average loss {:.4f}, Accuracy {:.3f}%, Accuracy per class {:.3f}%, meanIoU {:.3f}%, fwavacc {:.3f}% \n'.format(meters['loss'].avg, meters['acc1'].avg, meters['acc_class'].val, meters['meanIoU'].val, meters['fwavacc'].val ))
 
-    metrics.save_meters(meters, os.path.join(args.log_dir, 'test_results_ep{}.json'.format(epoch)), epoch)    
-    utils.save_res_list(res_list, os.path.join(args.res_dir, 'test_results_list_ep{}.json'.format(epoch)))    
+    metrics.save_meters(meters, os.path.join(output_dir, 'test_results_ep{}.json'.format(epoch)), epoch)    
+    utils.save_res_list(res_list, os.path.join(output_dir, 'test_results_list_ep{}.json'.format(epoch)))    
 
+    plotter.plot_confusion_matrix(np.array(meters["confusion_matrix"].value()), classnames, os.path.join(output_dir, 'test_norm_cm_ep{}.png'.format(epoch)), normalize=True, title='Normalized Confusion Matrix')
+    plotter.plot_confusion_matrix(np.array(meters["confusion_matrix"].value()), classnames, os.path.join(output_dir, 'test_cm_ep{}.png'.format(epoch)), normalize=False, title='Confusion Matrix')
 

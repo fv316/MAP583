@@ -214,7 +214,7 @@ def evaluate(hist):
 
 
 def accuracy_classif(output, target, topk=1):
-    """Computes the precision@k for the specified values of k"""
+    """Computes the precision @k for the specified values of k"""
     maxk = 1
     # maxk = max(topk)
     batch_size = target.size(0)
@@ -237,8 +237,8 @@ def accuracy_regression(output, target):
     mse_mean = (output - target).pow(2).mean()
     mse_std = (output - target).pow(2).std()
     rmse = (output - target).pow(2).mean().sqrt()
-    return mae, mse, rmse
-    return mae_mean.item(), mae_std.item(), mse_mean.item(), mse_std.item(), rmse_mean.item(), rmse_std.item()
+    return mae_mean.item(), mse_mean.item(), rmse.item()
+    # return mae_mean.item(), mae_std.item(), mse_mean.item(), mse_std.item(), rmse_mean.item(), rmse_std.item()
 
 
 def fast_hist(pred, label, n):
