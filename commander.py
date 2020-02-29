@@ -50,6 +50,7 @@ d88' `"Y8  888 .8P'    888' `88b   888   d88(  "8
                        888
                       o888o
 '''
+
 def save_checkpoint(args, state, is_best, filename='checkpoint.pth.tar'):
     utils.check_dir(args.log_dir)
     filename = os.path.join(args.log_dir, filename)
@@ -59,16 +60,13 @@ def save_checkpoint(args, state, is_best, filename='checkpoint.pth.tar'):
 
     fn = os.path.join(args.log_dir, 'checkpoint_epoch{}.pth.tar')
     torch.save(state, fn.format(state['epoch']))
-
     if (state['epoch'] - 1 ) % 5 != 0:
       #remove intermediate saved models, e.g. non-modulo 5 ones
       if os.path.exists(fn.format(state['epoch'] - 1 )):
           os.remove(fn.format(state['epoch'] - 1 ))
-
+    
     path_logger = os.path.join(args.log_dir, 'logger.json')
     state['exp_logger'].to_json(path_logger)
-
-
 
 
 def load_checkpoint(args, model):
@@ -207,7 +205,6 @@ def main():
             'exp_logger': exp_logger,
             'res_list': res_list,
         }, is_best)
-
 
     if args.tensorboard:
         tb_writer.close()

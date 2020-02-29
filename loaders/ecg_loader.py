@@ -16,10 +16,10 @@ idx2label = {
     1: 'Artial Premature',
     2: 'Premature ventricular contraction',
     3: 'Fusion of ventricular and normal',
-    4: 'Fusion of paced and normal'
+    4: 'Undetermined'
 }
 
-classnames = ['Normal','Artial Premature','Premature ventricular contraction','Fusion of ventricular and normal','Fusion of paced and normal']
+classnames = ['Normal','Artial Premature','Premature ventricular contraction','Fusion of ventricular and normal','Undertermined']
 
 
 class ECGLoader(torch.utils.data.Dataset):
@@ -59,10 +59,11 @@ class ECGLoader(torch.utils.data.Dataset):
         
         if self.split == 'train':
             path = os.path.join(self.data_dir, data_sets[0])
-        elif self.split == 'val':
+        # validation data and test data are the same for the time being
+        elif self.split == 'val' or self.split == 'test':
             path = os.path.join(self.data_dir, data_sets[1])
         else:
-            raise Exception('Please chose a valid split type from ["train", "val"]')            
+            raise Exception('Please chose a valid split type from [train, val, test]')            
 
         if not os.path.exists(path):
             parent_path = pathlib.Path(self.data_dir).parent

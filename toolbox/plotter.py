@@ -10,20 +10,7 @@ import itertools
 import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
-
-
-from PIL import Image
 import numpy as np
-
-try:
-    from visdom import Visdom
-except ImportError:
-    Visdom = None
-
-try:
-    import seaborn as sns
-except ImportError:
-    sns = None
 
 
 '''

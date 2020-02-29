@@ -59,6 +59,11 @@ Here are some more typical launch commands:
 
 - `python commander.py --dataset ecg --name ecg_resnet1d_10_optadam_lr1e-3_lrReducePlateau0.5_bsz128 --epochs 20 --num-classes 5 --root-dir ecg_data --arch resnet1d --model-name resnet1d_10 --batch-size 128 --lr 0.001 --scheduler ReduceLROnPlateau --optimizer sgd --tensorboard`
 
+- `python commander.py --dataset ecg --name ecg_resnet1d_v2_10_optadam_lr1e-3_lrReducePlateau0.5_bsz128 --epochs 20 --num-classes 5 --root-dir ecg_data --arch resnet1d_v2 --model-name resnet1d_v2_10 --batch-size 128 --lr 0.001 --scheduler ReduceLROnPlateau --optimizer adam --tensorboard`
+
+To get the test results run:
+
+- `python commander.py --dataset ecg --name ecg_cnn1d_3_optadam_lr1e-3_lrReducePlateau0.5_bsz128_testing --epochs 20 --num-classes 5 --root-dir ecg_data --arch cnn1d --model-name cnn1d_3 --batch-size 128 --lr 0.001 --scheduler ReduceLROnPlateau --optimizer adam --tensorboard --test --resume best`
 
 ## Results
 For each experiment a folder with the same name is created in the folder `root-dir/ecg/runs`. This folder contains the following items:
