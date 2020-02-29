@@ -80,7 +80,6 @@ class GoogleDriveDownloader:
                         stdout.flush()
                         current_size[0] += GoogleDriveDownloader.CHUNK_SIZE
 
-    # From https://stackoverflow.com/questions/1094841/reusable-library-to-get-human-readable-version-of-file-size
     @staticmethod
     def sizeof_fmt(num, suffix='B'):
         for unit in ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi']:

@@ -51,7 +51,7 @@ Here is a typical launch command and some comments:
   + this experiment is on the _ecg_ dataset which can be found in `--root-dir/ecg` trained over _resnet1d_10_. It optimizes with _adam_ with initial learning rate (`--lr`) of `1e-3` which is decayed by half whenever the `--scheduler` _ReduceLRonPlateau_ does not see an improvement in the validation accuracy for more than `--step` epochs. Input sequences are of size 187. In addition it saves intermediate results to `--tensorboard`.
   + when debugging you can add the `--short-run` argument which performs training and validation epochs of 10 mini-batches. This allows testing your entire pipeline before launching an experiment
   + if you want to resume a previously paused experiment you can use the `--resume` flag which can continue the training from _best_, _latest_ or a specifically designated epoch.
-  + if you want to use your model only for evaluation on the test set, add the `--test` flag. 
+  + if you want to use your model only for evaluation on the test set, add the `--test` flag. When doing this, ensure that the `--resume` flag is also being used (as well as the correct model name) otherwise testing will be done with an untrained model. 
 
 Here are some more typical launch commands:
 
@@ -61,7 +61,7 @@ Here are some more typical launch commands:
 
 - `python commander.py --dataset ecg --name ecg_resnet1d_v2_10_optadam_lr1e-3_lrReducePlateau0.5_bsz128 --epochs 20 --num-classes 5 --root-dir ecg_data --arch resnet1d_v2 --model-name resnet1d_v2_10 --batch-size 128 --lr 0.001 --scheduler ReduceLROnPlateau --optimizer adam --tensorboard`
 
-To get the test results run:
+To compute results on the testing set run:
 
 - `python commander.py --dataset ecg --name ecg_cnn1d_3_optadam_lr1e-3_lrReducePlateau0.5_bsz128_testing --epochs 20 --num-classes 5 --root-dir ecg_data --arch cnn1d --model-name cnn1d_3 --batch-size 128 --lr 0.001 --scheduler ReduceLROnPlateau --optimizer adam --tensorboard --test --resume best`
 
