@@ -16,6 +16,7 @@ oooo  ooo. .oo.   oooo  .o888oo
 o888o o888o o888o o888o   "888"
 '''
 
+
 def setup_env(args):
     torch.manual_seed(args.seed)
     if args.cuda:
@@ -25,16 +26,16 @@ def setup_env(args):
 
 # create necessary folders and config files
 def init_output_env(args):
-    check_dir(os.path.join(args.data_dir,'runs'))
+    check_dir(os.path.join(args.data_dir, 'runs'))
     check_dir(args.log_dir)
-    check_dir(os.path.join(args.log_dir,'pics'))
-    check_dir(os.path.join(args.log_dir,'tensorboard'))
-    check_dir(os.path.join(args.log_dir,'pred'))
+    check_dir(os.path.join(args.log_dir, 'pics'))
+    check_dir(os.path.join(args.log_dir, 'tensorboard'))
+    check_dir(os.path.join(args.log_dir, 'pred'))
     # check_dir(os.path.join(args.log_dir, 'watch'))
     check_dir(args.res_dir)
     with open(os.path.join(args.log_dir, 'config.json'), 'w') as f:
         json.dump(args.__dict__, f)
-    
+
 
 '''
                    o8o
@@ -47,10 +48,12 @@ o888o o888o o888o o888o 8""888P' `Y8bod8P'
 '''
 
 # check if folder exists, otherwise create it
+
+
 def check_dir(dir_path):
-    dir_path = dir_path.replace('//','/')
+    dir_path = dir_path.replace('//', '/')
     if not os.path.exists(dir_path):
-        os.makedirs(dir_path)   
+        os.makedirs(dir_path)
 
 
 def save_res_list(res_list, fn):
@@ -59,4 +62,4 @@ def save_res_list(res_list, fn):
 
 
 def count_params(model):
-   return sum([p.data.nelement() for p in model.parameters()])
+    return sum([p.data.nelement() for p in model.parameters()])

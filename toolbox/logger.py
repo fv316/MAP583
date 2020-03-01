@@ -14,6 +14,8 @@ import sys
 Object of the Experiment class keep track of scores and metrics across epochs.
 This data is saved to json files after each epoch. 
 '''
+
+
 class Experiment(object):
 
     def __init__(self, name, options=dict()):
@@ -70,14 +72,14 @@ class Experiment(object):
     def to_json(self, filename):
         if not os.path.exists(os.path.dirname(filename)):
             if sys.platform.startswith('win32'):
-                os.mkdir(os.path.dirname(filename)) 
+                os.mkdir(os.path.dirname(filename))
             else:
                 os.system('mkdir -p ' + os.path.dirname(filename))
         var_dict = copy.copy(vars(self))
         var_dict.pop('meters')
         for key in ('viz', 'viz_dict'):
             if key in list(var_dict.keys()):
-                var_dict.pop(key)    
+                var_dict.pop(key)
         with open(filename, 'w') as f:
             json.dump(var_dict, f)
 
@@ -86,12 +88,10 @@ class Experiment(object):
             var_dict = json.load(f)
         xp = Experiment('')
         xp.date_and_time = var_dict['date_and_time']
-        xp.logged        = var_dict['logged']
-        
+        xp.logged = var_dict['logged']
+
         if 'info' in var_dict:
             xp.info = var_dict['info']
         xp.options = var_dict['options']
         xp.name = var_dict['name']
         return xp
-
-

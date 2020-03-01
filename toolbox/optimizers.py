@@ -6,6 +6,7 @@ import torch
 
 EPS = 1e-7
 
+
 def get_optim_parameters(model):
     for param in model.parameters():
         yield param
@@ -16,28 +17,30 @@ def get_optimizer(args, model):
 
     if 'sgd' == args.optimizer:
         optimizer = torch.optim.SGD(get_optim_parameters(model),
-                            lr=args.lr,
-                            momentum=args.momentum,
-                            weight_decay=args.weight_decay)
+                                    lr=args.lr,
+                                    momentum=args.momentum,
+                                    weight_decay=args.weight_decay)
     elif 'adam' == args.optimizer:
         optimizer = torch.optim.Adam(get_optim_parameters(model),
-                            lr=args.lr,
-                            amsgrad=False)
+                                     lr=args.lr,
+                                     amsgrad=False)
     else:
         raise 'Optimizer {} not available'.format(args.optimizer)
 
     if 'StepLR' == args.scheduler:
         print(f' --- Setting lr scheduler to StepLR ---')
-        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.step, gamma=args.lr_decay)
+        scheduler = torch.optim.lr_scheduler.StepLR(
+            optimizer, step_size=args.step, gamma=args.lr_decay)
     elif 'ExponentialLR' == args.scheduler:
         print(f' --- Setting lr scheduler to ExponentialLR ---')
-        scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=args.lr_decay)    
+        scheduler = torch.optim.lr_scheduler.ExponentialLR(
+            optimizer, gamma=args.lr_decay)
     elif 'ReduceLROnPlateau' == args.scheduler:
-        print(f' --- Setting lr scheduler to ReduceLROnPlateau ---') 
-        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', factor=args.lr_decay, patience=args.step)
+        print(f' --- Setting lr scheduler to ReduceLROnPlateau ---')
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer, 'min', factor=args.lr_decay, patience=args.step)
     else:
         raise f'Scheduler {args.scheduler} not available'
-    
 
     return optimizer, scheduler
 
@@ -49,5 +52,3 @@ def adjust_learning_rate(args, optimizer, epoch):
         param_group['lr'] = lr
 
     return lr
-
-

@@ -11,17 +11,23 @@ def get_model(args):
 
     print('Fetching model %s - %s ' % (args.arch, args.model_name))
     if args.arch == 'resnet':
-        model = model_instance(args.model_name, args.num_classes, args.input_channels, args.pretrained)
+        model = model_instance(
+            args.model_name, args.num_classes, args.input_channels, args.pretrained)
     elif args.arch == 'squeezenet':
-        model = model_instance(args.model_name, args.num_classes, args.input_channels, args.pretrained)
+        model = model_instance(
+            args.model_name, args.num_classes, args.input_channels, args.pretrained)
     elif args.arch == 'lenet':
-        model = model_instance(args.model_name, args.num_classes, args.input_channels)
+        model = model_instance(
+            args.model_name, args.num_classes, args.input_channels)
     elif args.arch == 'cnn1d':
-        model = model_instance(args.model_name, args.num_classes, args.input_channels)
+        model = model_instance(
+            args.model_name, args.num_classes, args.input_channels)
     elif args.arch == 'resnet1d':
-        model = model_instance(args.model_name, args.num_classes, args.input_channels)
+        model = model_instance(
+            args.model_name, args.num_classes, args.input_channels)
     elif args.arch == 'resnet1d_v2':
-        model = model_instance(args.model_name, args.num_classes, args.input_channels)
+        model = model_instance(
+            args.model_name, args.num_classes, args.input_channels)
     else:
         raise 'Model {} not available'.format(args.arch)
 

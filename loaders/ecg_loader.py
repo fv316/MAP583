@@ -21,9 +21,10 @@ idx2label = {
 
 
 # class names and short hand class names
-classnames = ['Normal','Artial Premature','Premature ventricular contraction','Fusion of ventricular and normal','Unknown']
-sh_classnames = ['Normal','PAC','PVC','Fusion','Unknown']
-class_importance = np.array([1,2,2,2,0.5])
+classnames = ['Normal', 'Artial Premature', 'Premature ventricular contraction',
+              'Fusion of ventricular and normal', 'Unknown']
+sh_classnames = ['Normal', 'PAC', 'PVC', 'Fusion', 'Unknown']
+class_importance = np.array([1, 2, 2, 2, 0.5])
 data_sets = ['mitbih_train.csv', 'mitbih_test.csv']
 
 
@@ -31,7 +32,7 @@ class ECGLoader(torch.utils.data.Dataset):
 
     def __init__(self, data_dir, split, custom_transforms=None, list_dir=None,
                  crop_size=None, num_classes=5, phase=None):
-        
+
         self.data_dir = data_dir
         self.split = split
         self.phase = split if phase is None else phase
@@ -46,9 +47,9 @@ class ECGLoader(torch.utils.data.Dataset):
 
         self.read_lists()
 
-
-    def __getitem__(self, index : int):
-        ecg = self.data.iloc[index, :-1].values.astype(np.float32).reshape((1, 187))
+    def __getitem__(self, index: int):
+        ecg = self.data.iloc[index, :-
+                             1].values.astype(np.float32).reshape((1, 187))
         label = self.data.iloc[index, -1]
         if self.transform is not None:
             ecg = self.transform(ecg)
@@ -58,46 +59,43 @@ class ECGLoader(torch.utils.data.Dataset):
             label = torch.tensor(label).long()
         return tuple([ecg, label, index])
 
-
     def __len__(self):
         return len(self.data)
 
-
-    def read_lists(self):        
+    def read_lists(self):
         if self.split == 'train':
             path = os.path.join(self.data_dir, self.data_sets[0])
         # validation data and test data are the same for the time being
         elif self.split == 'val' or self.split == 'test':
             path = os.path.join(self.data_dir, self.data_sets[1])
         else:
-            raise Exception('Please chose a valid split type from ["train", "val", "test"]')            
+            raise Exception(
+                'Please chose a valid split type from ["train", "val", "test"]')
 
         if not os.path.exists(path):
             self._build_dir(path, True, True, True)
-            
+
         self.data = pd.read_csv(path, header=None)
-        self.labels = self.data[187].astype(int) # pandas time series type
+        self.labels = self.data[187].astype(int)  # pandas time series type
         repartition = self.labels.value_counts()
         self.class_weights = np.array([1./repartition[i] for i in range(5)])
 
-
     def _build_dir(self, path, unzip, showsize, del_zip):
         parent_path = pathlib.Path(self.data_dir).parent
-        name = os.path.basename(self.data_dir) # always ecg
+        name = os.path.basename(self.data_dir)  # always ecg
 
         GoogleDriveDownloader.download_file_from_google_drive(
             file_id=GOOGLE_FILE_ID, dest_path=os.path.join(parent_path, ZIP_NAME), unzip=unzip, showsize=showsize, del_zip=del_zip)
-        
+
         extracted_folder = os.path.join(parent_path, 'ecg_data')
-        for i in self.data_sets:  
-            shutil.move(os.path.join(extracted_folder, i), os.path.join(parent_path, name))
+        for i in self.data_sets:
+            shutil.move(os.path.join(extracted_folder, i),
+                        os.path.join(parent_path, name))
         os.rmdir(extracted_folder)
 
-
-    def get_cb_weights(self, cb):  
-        label_importance = self.get_label_importance(cb)  
+    def get_cb_weights(self, cb):
+        label_importance = self.get_label_importance(cb)
         return self.class_weights * label_importance
-
 
     def get_sampler_weights(self, sampler):
         self.sampler = sampler
@@ -109,13 +107,12 @@ class ECGLoader(torch.utils.data.Dataset):
 
         return weights
 
-
     def get_label_importance(self, scheme):
         if scheme == 'equal':
-            l_importance = np.array([1,1,1,1,1])
+            l_importance = np.array([1, 1, 1, 1, 1])
         elif scheme == 'importance':
             l_importance = self.class_importance
         else:
             raise 'Sampling strategy {} not available'.format(scheme)
-        
+
         return l_importance
