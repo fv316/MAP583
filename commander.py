@@ -18,7 +18,6 @@ from args import parse_args
 from torch.utils.tensorboard import SummaryWriter
 
 
-
 '''
  o8o               o8o      .
  `"'               `"'    .o8
@@ -29,13 +28,15 @@ oooo  ooo. .oo.   oooo  .o888oo
 o888o o888o o888o o888o   "888"
 '''
 
+
 def init_logger(args, model):
     # set loggers
     exp_name = args.name
     exp_logger = logger.Experiment(exp_name, args.__dict__)
     exp_logger.add_meters('train', metrics.make_meters(args.num_classes))
     exp_logger.add_meters('val', metrics.make_meters(args.num_classes))
-    exp_logger.add_meters('hyperparams', {'learning_rate': metrics.ValueMeter()})
+    exp_logger.add_meters(
+        'hyperparams', {'learning_rate': metrics.ValueMeter()})
     return exp_logger
 
 
@@ -51,26 +52,28 @@ d88' `"Y8  888 .8P'    888' `88b   888   d88(  "8
                       o888o
 '''
 
+
 def save_checkpoint(args, state, is_best, filename='checkpoint.pth.tar'):
     utils.check_dir(args.log_dir)
     filename = os.path.join(args.log_dir, filename)
     torch.save(state, filename)
     if is_best:
-        shutil.copyfile(filename, os.path.join(args.log_dir, 'model_best.pth.tar'))
+        shutil.copyfile(filename, os.path.join(
+            args.log_dir, 'model_best.pth.tar'))
 
     fn = os.path.join(args.log_dir, 'checkpoint_epoch{}.pth.tar')
     torch.save(state, fn.format(state['epoch']))
-    if (state['epoch'] - 1 ) % 5 != 0:
-      #remove intermediate saved models, e.g. non-modulo 5 ones
-      if os.path.exists(fn.format(state['epoch'] - 1 )):
-          os.remove(fn.format(state['epoch'] - 1 ))
-    
+    if (state['epoch'] - 1) % 5 != 0:
+        # remove intermediate saved models, e.g. non-modulo 5 ones
+        if os.path.exists(fn.format(state['epoch'] - 1)):
+            os.remove(fn.format(state['epoch'] - 1))
+
     path_logger = os.path.join(args.log_dir, 'logger.json')
     state['exp_logger'].to_json(path_logger)
 
 
 def load_checkpoint(args, model):
-    
+
     filename = ''
 
     if 'latest' == args.resume:
@@ -78,7 +81,8 @@ def load_checkpoint(args, model):
     elif 'best' == args.resume:
         filename = os.path.join(args.log_dir, 'model_best.pth.tar')
     else:
-        filename = os.path.join(args.log_dir, 'checkpoint_epoch{}.pth.tar'.format(args.resume))
+        filename = os.path.join(
+            args.log_dir, 'checkpoint_epoch{}.pth.tar'.format(args.resume))
 
     print('Verifying if resume file exists')
     if os.path.exists(filename):
@@ -91,7 +95,7 @@ def load_checkpoint(args, model):
         learning_rate = exp_logger.meters['hyperparams']['learning_rate'].val
         model.load_state_dict(checkpoint['state_dict'])
         print("=> loaded checkpoint '{}' (epoch {})"
-            .format(filename, checkpoint['epoch']))
+              .format(filename, checkpoint['epoch']))
 
         return model, exp_logger, start_epoch, best_score, best_epoch, learning_rate
     else:
@@ -119,30 +123,35 @@ def main():
             print(k, ':', v)
     else:
         print('Please provide some parameters for the current experiment. Check-out arg.py for more info!')
-        sys.exit()    
-     
-    # init random seeds 
+        sys.exit()
+
+    # init random seeds
     utils.setup_env(args)
 
     # init tensorboard summary is asked
-    tb_writer = SummaryWriter(f'{args.data_dir}/runs/{args.name}/tensorboard') if args.tensorboard else None
+    tb_writer = SummaryWriter(
+        f'{args.data_dir}/runs/{args.name}/tensorboard') if args.tensorboard else None
 
     # init data loaders
     loader = get_loader(args)
-    train_data = loader(data_dir=args.data_dir, split='train', phase='train', num_classes=args.num_classes)
+    train_data = loader(data_dir=args.data_dir, split='train',
+                        phase='train', num_classes=args.num_classes)
     sample_method, cb_weights, sample_weights = None, None, None
     if args.sampler:
-        sample_weights = torch.tensor(train_data.get_sampler_weights(args.sampler))
-        sample_method = torch.utils.data.WeightedRandomSampler(sample_weights, len(train_data))
+        sample_weights = torch.tensor(
+            train_data.get_sampler_weights(args.sampler))
+        sample_method = torch.utils.data.WeightedRandomSampler(
+            sample_weights, len(train_data))
     elif args.class_balance:
-        cb_weights = torch.tensor(train_data.get_cb_weights(args.class_balance))
+        cb_weights = torch.tensor(
+            train_data.get_cb_weights(args.class_balance))
 
-    train_loader = torch.utils.data.DataLoader(train_data, batch_size=args.batch_size, 
-        shuffle=False if args.sampler else True, num_workers=args.workers, pin_memory=True, 
-        sampler=sample_method)
+    train_loader = torch.utils.data.DataLoader(train_data, batch_size=args.batch_size,
+                                               shuffle=False if args.sampler else True, num_workers=args.workers, pin_memory=True,
+                                               sampler=sample_method)
     val_loader = torch.utils.data.DataLoader(loader(data_dir=args.data_dir, split='val',
-        phase='test', num_classes=args.num_classes), batch_size=args.batch_size,
-        shuffle=False, num_workers=args.workers, pin_memory=True)
+                                                    phase='test', num_classes=args.num_classes), batch_size=args.batch_size,
+                                             shuffle=False, num_workers=args.workers, pin_memory=True)
 
     exp_logger, lr = None, None
 
@@ -151,52 +160,54 @@ def main():
 
     # optionally resume from a checkpoint
     if args.resume:
-        model, exp_logger, args.start_epoch, best_score, best_epoch, lr = load_checkpoint(args, model)
+        model, exp_logger, args.start_epoch, best_score, best_epoch, lr = load_checkpoint(
+            args, model)
         args.lr = lr
     else:
-        # create all output folders 
+        # create all output folders
         utils.init_output_env(args)
 
     if exp_logger is None:
         exp_logger = init_logger(args, model)
 
     optimizer, scheduler = optimizers.get_optimizer(args, model)
-   
+
     print('  + Number of params: {}'.format(utils.count_params(model)))
 
     model.to(args.device)
     criterion.to(args.device)
 
     if args.test:
-        test_loader = torch.utils.data.DataLoader(loader(data_dir=args.data_dir, split='test', 
-            phase='test', num_classes=args.num_classes), batch_size=args.batch_size,
-            shuffle=False, num_workers=args.workers, pin_memory=True)
-        trainer.test(args, test_loader, model, criterion, args.start_epoch, 
-            eval_score=metrics.accuracy_classif, output_dir=args.out_pred_dir, has_gt=True)
+        test_loader = torch.utils.data.DataLoader(loader(data_dir=args.data_dir, split='test',
+                                                         phase='test', num_classes=args.num_classes), batch_size=args.batch_size,
+                                                  shuffle=False, num_workers=args.workers, pin_memory=True)
+        trainer.test(args, test_loader, model, criterion, args.start_epoch,
+                     eval_score=metrics.accuracy_classif, output_dir=args.out_pred_dir, has_gt=True)
         sys.exit()
 
     is_best = True
     for epoch in range(args.start_epoch, args.epochs + 1):
         print('Current epoch: ', epoch)
-       
+
         trainer.train(args, train_loader, model, criterion, optimizer, exp_logger, epoch,
-              eval_score=metrics.accuracy_classif, tb_writer=tb_writer)
-    
+                      eval_score=metrics.accuracy_classif, tb_writer=tb_writer)
+
         # evaluate on validation set
-        mAP, val_loss, res_list = trainer.validate(args, val_loader, model, criterion, exp_logger, epoch, eval_score=metrics.accuracy_classif, tb_writer=tb_writer)
+        mAP, val_loss, res_list = trainer.validate(
+            args, val_loader, model, criterion, exp_logger, epoch, eval_score=metrics.accuracy_classif, tb_writer=tb_writer)
 
         # update learning rate
         if scheduler is None:
             trainer.adjust_learning_rate(args, optimizer, epoch)
         else:
-            prev_lr =  optimizer.param_groups[0]['lr']
+            prev_lr = optimizer.param_groups[0]['lr']
             if 'ReduceLROnPlateau' == args.scheduler:
                 scheduler.step(val_loss)
-            else:    
+            else:
                 scheduler.step()
-                
-            print(f"Updating learning rate from {prev_lr} to {optimizer.param_groups[0]['lr']}")
 
+            print(
+                f"Updating learning rate from {prev_lr} to {optimizer.param_groups[0]['lr']}")
 
         # remember best acc and save checkpoint
         is_best = mAP > best_score
@@ -217,7 +228,6 @@ def main():
         tb_writer.close()
 
     print("Scripts have run successfully")
-
 
 
 if __name__ == '__main__':

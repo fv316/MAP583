@@ -14,6 +14,7 @@ model_urls = {
     'resnet152': 'https://download.pytorch.org/models/resnet152-b121ed2d.pth',
 }
 
+
 def conv3x3(in_planes, out_planes, stride=1):
     """3x3 convolution with padding"""
     return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
@@ -62,7 +63,8 @@ class Bottleneck(nn.Module):
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride,
                                padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(planes)
-        self.conv3 = nn.Conv2d(planes, planes * self.expansion, kernel_size=1, bias=False)
+        self.conv3 = nn.Conv2d(
+            planes, planes * self.expansion, kernel_size=1, bias=False)
         self.bn3 = nn.BatchNorm2d(planes * self.expansion)
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
@@ -96,7 +98,8 @@ class ResNet(nn.Module):
     def __init__(self, block, layers, num_classes=43, input_channels=3):
         self.inplanes = 64
         super(ResNet, self).__init__()
-        self.conv1 = nn.Conv2d(input_channels, 64, kernel_size=7, stride=2, padding=3, bias=False)
+        self.conv1 = nn.Conv2d(
+            input_channels, 64, kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
@@ -104,22 +107,23 @@ class ResNet(nn.Module):
         self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
-        self.avgpool = nn.AdaptiveAvgPool2d(output_size=(1,1))
+        self.avgpool = nn.AdaptiveAvgPool2d(output_size=(1, 1))
         self.fc = nn.Linear(512 * block.expansion, num_classes)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                nn.init.kaiming_normal_(
+                    m.weight, mode='fan_out', nonlinearity='relu')
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
 
-        if 1 == num_classes: 
+        if 1 == num_classes:
             # compatible with nn.BCELoss
             self.softmax = nn.Sigmoid()
-        else:    
+        else:
             # compatible with nn.CrossEntropyLoss
-            self.softmax = nn.LogSoftmax(dim=1)        
+            self.softmax = nn.LogSoftmax(dim=1)
 
     def _make_layer(self, block, planes, blocks, stride=1):
         downsample = None
@@ -138,7 +142,6 @@ class ResNet(nn.Module):
 
         return nn.Sequential(*layers)
 
-
     def forward(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
@@ -153,20 +156,19 @@ class ResNet(nn.Module):
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
         x = self.fc(x)
-        
+
         x = self.softmax(x)
 
         return x
 
-
     def optim_parameters(self, memo=None):
         for param in self.parameters():
             yield param
-        
+
 
 def resnet18(pretrained=False, **kwargs):
     """Constructs a ResNet-18 model. Nota that if you change the number of classes and input channels the loading of the pre-trained model will no longer be possible here. In order to load those weights you need to do some manual surgery over the network, i.e. removing the final fully connected layer and replacing it with your own with the desired amount of output classes.
-    
+
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
@@ -174,6 +176,7 @@ def resnet18(pretrained=False, **kwargs):
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['resnet18']))
     return model
+
 
 def resnet34(pretrained=False, **kwargs):
     model = ResNet(BasicBlock, [3, 4, 6, 3], **kwargs)
@@ -187,7 +190,6 @@ def resnet50(pretrained=False, **kwargs):
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['resnet50']))
     return model
-
 
 
 def resnet(model_name, num_classes, input_channels, pretrained=False):

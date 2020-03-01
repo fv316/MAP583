@@ -19,12 +19,12 @@ def parse_args():
 
     # main folder for data storage
     parser.add_argument('--root-dir', type=str, default=None)
-   
+
     # model settings
     parser.add_argument('--arch', type=str,
                         help='type of architecture to be used, e.g. cnn1d')
     parser.add_argument('--model-name', type=str,
-                        help='type of model to be used. Particular instance of a given architecture, e.g. cnn1d_3')    
+                        help='type of model to be used. Particular instance of a given architecture, e.g. cnn1d_3')
     parser.add_argument('--resume', default='', type=str, metavar='PATH',
                         help='which checkpoint to resume from possible values ["latest", "best", epoch]')
     parser.add_argument('--pretrained', action='store_true',
@@ -38,7 +38,8 @@ def parse_args():
 
     # training settings
     parser.add_argument('--start-epoch', type=int, default=1)
-    parser.add_argument('--step', type=int, default=20, help='frequency of updating learning rate, given in epochs')
+    parser.add_argument('--step', type=int, default=20,
+                        help='frequency of updating learning rate, given in epochs')
     parser.add_argument('--batch-size', type=int, default=4, metavar='N',
                         help='input batch size for training (default: 4)')
     parser.add_argument('--epochs', type=int, default=70, metavar='N',
@@ -61,6 +62,7 @@ def parse_args():
                         help='class balancing (loss augmenting) scheme from ["equal", "importance"], cannot be used with sampler')
     parser.add_argument('--sampler', default=None, type=str, metavar='sampling',
                         help='sampling scheme from ["equal", "importance"], cannot be used with class-balance')
+
     # misc settings
     parser.add_argument('--seed', type=int, default=42, metavar='S',
                         help='random seed (default: 42)')
@@ -68,7 +70,7 @@ def parse_args():
                         default=False, help='running only over few mini-batches for debugging purposes')
     parser.add_argument('--disable-cuda', action='store_true', default=False,
                         help='disables CUDA training / using only CPU')
-    parser.add_argument('--tensorboard', dest='tensorboard', action='store_true',default=False,
+    parser.add_argument('--tensorboard', dest='tensorboard', action='store_true', default=False,
                         help='Use tensorboard to track and plot')
 
     args = parser.parse_args()
@@ -78,7 +80,7 @@ def parse_args():
     args.log_dir = '{}/runs/{}/'.format(args.data_dir, args.name)
     args.res_dir = '%s/runs/%s/res' % (args.data_dir, args.name)
     args.out_pred_dir = '%s/runs/%s/pred' % (args.data_dir, args.name)
-    
+
     args.cuda = not args.disable_cuda and torch.cuda.is_available()
     args.device = 'cuda' if args.cuda else 'cpu'
 

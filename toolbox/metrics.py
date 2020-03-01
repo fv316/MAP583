@@ -17,8 +17,10 @@ ooo. .oo.  .oo.    .ooooo.  .o888oo  .ooooo.  oooo d8b  .oooo.o
 o888o o888o o888o `Y8bod8P'   "888" `Y8bod8P' d888b    8""888P'
 '''
 
+
 class AverageMeter(object):
     """Computes and stores the average and current value"""
+
     def __init__(self):
         self.reset()
 
@@ -37,8 +39,10 @@ class AverageMeter(object):
     def value(self):
         return self.avg
 
+
 class SumMeter(object):
     """Computes and stores the sum and current value"""
+
     def __init__(self):
         self.reset()
 
@@ -58,6 +62,7 @@ class SumMeter(object):
 
 class ValueMeter(object):
     """Computes and stores the average and current value"""
+
     def __init__(self):
         self.reset()
 
@@ -69,7 +74,6 @@ class ValueMeter(object):
 
     def value(self):
         return self.val
-
 
 
 class ConfusionMeter(object):
@@ -105,7 +109,7 @@ class ConfusionMeter(object):
                 values between 0 and K-1 or N x K tensor, where targets are
                 assumed to be provided as one-hot vectors
         """
-        if predicted.numel()>1:
+        if predicted.numel() > 1:
             predicted.squeeze_()
             target.squeeze_()
         else:
@@ -179,7 +183,6 @@ def make_meters(num_classes=2):
     return meters_dict
 
 
-
 def save_meters(meters, fn, epoch=0):
 
     logged = {}
@@ -202,13 +205,15 @@ o.  )88b 888   .o8 888   888  888     888    .o o.  )88b
 8""888P' `Y8bod8P' `Y8bod8P' d888b    `Y8bod8P' 8""888P'
 '''
 
+
 def evaluate(hist):
     acc = np.diag(hist).sum() / hist.sum()
     acc_cls = np.diag(hist) / hist.sum(axis=1)
     acc_cls = np.nanmean(acc_cls)
-    iu = np.diag(hist) / (hist.sum(axis=1) + hist.sum(axis=0) - np.diag(hist)+1e-10)
+    iu = np.diag(hist) / (hist.sum(axis=1) +
+                          hist.sum(axis=0) - np.diag(hist)+1e-10)
     mean_iu = np.nanmean(iu)
-    freq = hist.sum(axis=1) / (hist.sum()+ 1e-10)
+    freq = hist.sum(axis=1) / (hist.sum() + 1e-10)
     fwavacc = (freq[freq > 0] * iu[freq > 0]).sum()
     return acc, acc_cls, mean_iu, fwavacc
 
@@ -248,6 +253,4 @@ def fast_hist(pred, label, n):
 
 
 def per_class_iu(hist):
-    return np.diag(hist) / (hist.sum(1) + hist.sum(0) - np.diag(hist)+ 1e-10)
-
-
+    return np.diag(hist) / (hist.sum(1) + hist.sum(0) - np.diag(hist) + 1e-10)

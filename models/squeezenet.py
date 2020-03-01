@@ -13,7 +13,6 @@ model_urls = {
 }
 
 
-
 class Fire(nn.Module):
 
     def __init__(self, inplanes, squeeze_planes,
@@ -87,10 +86,10 @@ class SqueezeNet(nn.Module):
             nn.AdaptiveAvgPool2d((1, 1))
         )
 
-        if 1 == num_classes: 
+        if 1 == num_classes:
             self.softmax = nn.Sigmoid()
-        else:    
-            self.softmax = nn.LogSoftmax(dim=1)         
+        else:
+            self.softmax = nn.LogSoftmax(dim=1)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -141,4 +140,4 @@ def squeezenet(model_name, num_classes, input_channels, pretrained=False):
     return{
         'squeezenet1_0': squeezenet1_0(num_classes=num_classes, input_channels=input_channels, pretrained=pretrained),
         'squeezenet1_1': squeezenet1_1(num_classes=num_classes, input_channels=input_channels, pretrained=pretrained),
-        }[model_name]
+    }[model_name]

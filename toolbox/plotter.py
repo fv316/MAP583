@@ -2,6 +2,8 @@
 '''
 Plotter class for plotting various things
 '''
+import numpy as np
+import matplotlib.pyplot as plt
 import os
 import shutil
 import sys
@@ -9,8 +11,6 @@ import copy
 import itertools
 import matplotlib as mpl
 mpl.use('Agg')
-import matplotlib.pyplot as plt
-import numpy as np
 
 
 '''
@@ -32,18 +32,18 @@ def save_plot(args, logger, tags=['train', 'val'], name='loss', title='loss curv
     epochs = None
     for tag in tags:
         if epochs is None:
-            epochs = np.array([x for x in var_dict[tag][name].keys()]) 
+            epochs = np.array([x for x in var_dict[tag][name].keys()])
 
         curr_line = np.array([x for x in var_dict[tag][name].values()])
         plt.plot(epochs, curr_line)
-
 
     plt.grid(True)
     plt.xlabel('epochs')
     plt.title('{} - {}'.format(title, args.name))
     plt.legend(labels=labels)
 
-    out_fn = os.path.join(args.log_dir, 'pics', '{}_{}.png'.format(args.name, name))
+    out_fn = os.path.join(args.log_dir, 'pics',
+                          '{}_{}.png'.format(args.name, name))
     plt.savefig(out_fn, bbox_inches='tight', dpi=150)
     plt.gcf().clear()
     plt.close()
@@ -51,7 +51,8 @@ def save_plot(args, logger, tags=['train', 'val'], name='loss', title='loss curv
 
 def save_as_best(is_best, out_fn, extension='png'):
     if is_best:
-        shutil.copyfile(out_fn, out_fn.replace(f'.{extension}', f'_best.{extension}'))
+        shutil.copyfile(out_fn, out_fn.replace(
+            f'.{extension}', f'_best.{extension}'))
 
 
 def plot_confusion_matrix(cm, classnames, out_fn,
@@ -63,7 +64,7 @@ def plot_confusion_matrix(cm, classnames, out_fn,
     Normalization can be applied by setting `normalize=True`.
     """
 
-    # classnames =  np.array(classnames)    
+    # classnames =  np.array(classnames)
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         print("Normalized confusion matrix")
@@ -72,28 +73,28 @@ def plot_confusion_matrix(cm, classnames, out_fn,
 
     fig, ax = plt.subplots()
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title, fontsize= 20)
-    plt.ylabel('True label', fontsize= 10)
-    plt.xlabel('Predicted label', fontsize= 10)
+    plt.title(title, fontsize=20)
+    plt.ylabel('True label', fontsize=10)
+    plt.xlabel('Predicted label', fontsize=10)
     plt.colorbar()
     tick_marks = np.arange(len(classnames))
 
-    plt.xticks(tick_marks, classnames, rotation=0, fontsize = 8)
-    plt.yticks(tick_marks, classnames, rotation=0, fontsize = 8)
+    plt.xticks(tick_marks, classnames, rotation=0, fontsize=8)
+    plt.yticks(tick_marks, classnames, rotation=0, fontsize=8)
 
-    #ax.set_xticks(tick_marks)
+    # ax.set_xticks(tick_marks)
     #ax.set_xticklabels(classnames, rotation=45, fontsize=5)
-    #ax.set_yticks(tick_marks)
+    # ax.set_yticks(tick_marks)
     #ax.set_yticklabels(classnames, rotation=45, fontsize=5)
 
     formating = '.2f' if normalize else 'd'
     thresh = cm.max() / 2.
     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
         plt.text(j, i, format(cm[i, j], formating),
-                horizontalalignment="center",
-                color="white" if cm[i, j] > thresh else "black")
+                 horizontalalignment="center",
+                 color="white" if cm[i, j] > thresh else "black")
 
     print(f'saving plot to {out_fn}')
     plt.savefig(out_fn, bbox_inches='tight', dpi=300)
     plt.gcf().clear()
-    plt.close()    
+    plt.close()

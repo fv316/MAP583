@@ -7,10 +7,11 @@ class BasicBlock(nn.Module):
 
     def __init__(self, inplanes, planes, stride=1, downsample=None):
         super(BasicBlock, self).__init__()
-        self.conv1 = nn.Conv1d(inplanes, planes, kernel_size= 5, stride=stride, padding=2)
+        self.conv1 = nn.Conv1d(
+            inplanes, planes, kernel_size=5, stride=stride, padding=2)
         self.bn1 = nn.BatchNorm1d(planes)
         self.relu = nn.ReLU(inplace=True)
-        self.conv2 = nn.Conv1d(planes, planes, kernel_size= 5, padding = 2)
+        self.conv2 = nn.Conv1d(planes, planes, kernel_size=5, padding=2)
         self.bn2 = nn.BatchNorm1d(planes)
         self.downsample = downsample
         self.stride = stride
@@ -39,7 +40,8 @@ class ResNet1d(nn.Module):
         self.inplanes = 32
         super(ResNet1d, self).__init__()
 
-        self.conv1 = nn.Conv1d(input_channels, 32, kernel_size=5, stride=1, padding=2, bias=False)
+        self.conv1 = nn.Conv1d(
+            input_channels, 32, kernel_size=5, stride=1, padding=2, bias=False)
         self.bn1 = nn.BatchNorm1d(32)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool1d(kernel_size=3, stride=2, padding=1)
@@ -50,13 +52,12 @@ class ResNet1d(nn.Module):
         self.avgpool = nn.AdaptiveAvgPool1d(output_size=(1))
         self.fc = nn.Linear(32 * block.expansion, num_classes)
 
-        if 1 == num_classes: 
+        if 1 == num_classes:
             # compatible with nn.BCELoss
             self.softmax = nn.Sigmoid()
         else:
             # compatible with nn.CrossEntropyLoss
-            self.softmax = nn.LogSoftmax(dim=1)    
-
+            self.softmax = nn.LogSoftmax(dim=1)
 
     def _make_layer(self, block, planes, blocks, stride=1):
         downsample = None
@@ -73,8 +74,7 @@ class ResNet1d(nn.Module):
         for i in range(1, blocks):
             layers.append(block(self.inplanes, planes))
 
-        return nn.Sequential(*layers)    
-
+        return nn.Sequential(*layers)
 
     def forward(self, x):
         x = self.conv1(x)
