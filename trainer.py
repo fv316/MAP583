@@ -258,6 +258,7 @@ def test(args, eval_data_loader, model, criterion, epoch, eval_score=None,
     utils.save_res_list(res_list, os.path.join(output_dir, 'test_results_list_ep{}.json'.format(epoch)))    
 
     # TODO: add class names
-    plotter.plot_confusion_matrix(np.array(meters["confusion_matrix"].value()), ['0','1','2','3','4'], os.path.join(output_dir, 'test_norm_cm_ep{}.png'.format(epoch)), normalize=True, title='Normalized Confusion Matrix')
-    plotter.plot_confusion_matrix(np.array(meters["confusion_matrix"].value()), ['0','1','2','3','4'], os.path.join(output_dir, 'test_cm_ep{}.png'.format(epoch)), normalize=False, title='Confusion Matrix')
+    cm = np.array(meters["confusion_matrix"].value())
+    plotter.plot_confusion_matrix(cm, [str(i) for i in range(len(cm))], os.path.join(output_dir, 'test_norm_cm_ep{}.png'.format(epoch)), normalize=True, title='Normalized Confusion Matrix')
+    plotter.plot_confusion_matrix(cm, [str(i) for i in range(len(cm))], os.path.join(output_dir, 'test_cm_ep{}.png'.format(epoch)), normalize=False, title='Confusion Matrix')
 
