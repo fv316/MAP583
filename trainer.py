@@ -58,7 +58,7 @@ def train(args, train_loader, model, criterion, optimizer, logger, epoch,
         meters['batch_time'].update(time.time() - end, n=batch_size)
         end = time.time()
 
-        if i % print_freq == 0 and args.verbose:
+        if i % print_freq == 0:
             print('Epoch: [{0}][{1}/{2}]\t'
                   'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
                   'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
@@ -67,11 +67,6 @@ def train(args, train_loader, model, criterion, optimizer, logger, epoch,
                   'Acc@1 {top1.val:.3f} ({top1.avg:.3f})'.format(
                       epoch, i, len(train_loader), batch_time=meters['batch_time'],
                       data_time=meters['data_time'], lr=meters_params['learning_rate'], loss=meters['loss'], top1=meters['acc1']))
-        elif not args.verbose:
-            print('Epoch: [{0}][{1}/{2}]'.format(epoch,
-                                                 i+1, len(train_loader)), end='\r')
-            if i == len(train_loader)-1:
-                print()
 
         if True == args.short_run:
             if 12 == i:
@@ -153,18 +148,13 @@ def validate(args, val_loader, model, criterion, logger, epoch, eval_score=None,
                 pass
                 # utils.save_res_grid
 
-            if i % print_freq == 0 and args.verbose:
+            if i % print_freq == 0:
                 print('Validation: [{0}/{1}]\t'
                       'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
                       'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
                       'Acc@1 {score.val:.3f} ({score.avg:.3f})'.format(
                           i, len(val_loader), batch_time=meters['batch_time'], loss=meters['loss'],
                           score=meters['acc1']), flush=True)
-            elif not args.verbose:
-                print('Epoch: [{0}][{1}/{2}]'.format(epoch,
-                                                     i+1, len(val_loader)), end='\r')
-                if i == len(val_loader)-1:
-                    print()
 
             if True == args.short_run:
                 if 12 == i:
@@ -181,7 +171,8 @@ def validate(args, val_loader, model, criterion, logger, epoch, eval_score=None,
                                        meters['meanIoU'].val, meters['fwavacc'].val))
 
     logger.log_meters('val', n=epoch)
-    print(res_list)
+    if args.verbose:
+        print(res_list)
     utils.save_res_list(res_list, os.path.join(
         args.res_dir, 'val_results_list_ep{}.json'.format(epoch)))
 
@@ -255,18 +246,13 @@ def test(args, eval_data_loader, model, criterion, epoch, eval_score=None,
             meters['batch_time'].update(time.time() - end, n=batch_size)
 
             end = time.time()
-            if i % print_freq == 0 and args.verbose:
+            if i % print_freq == 0:
                 print('Testing: [{0}/{1}]\t'
                       'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
                       'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
                       'Acc@1 {score.val:.3f} ({score.avg:.3f})'.format(
                           i, len(eval_data_loader), batch_time=meters['batch_time'], loss=meters['loss'],
                           score=meters['acc1']), flush=True)
-            elif not args.verbose:
-                print('Epoch: [{0}][{1}/{2}]'.format(epoch,
-                                                     i+1, len(eval_data_loader)), end='\r')
-                if i == len(eval_data_loader)-1:
-                    print()
 
             if True == args.short_run:
                 if 12 == i:
