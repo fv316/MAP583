@@ -16,6 +16,8 @@ def parse_args():
                         help='name of dataset to train upon')
     parser.add_argument('--test', dest='test', action='store_true', default=False,
                         help='To only run inference on test set')
+    parser.add_argument('--verbose',  action='store_true', default=False,
+                        help='Print training related information to console')
 
     # main folder for data storage
     parser.add_argument('--root-dir', type=str, default=None)
