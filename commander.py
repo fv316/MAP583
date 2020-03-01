@@ -130,10 +130,12 @@ def main():
     # init data loaders
     loader = get_loader(args)
     train_data = loader(data_dir=args.data_dir, split='train', phase='train', num_classes=args.num_classes)
-    sample_method = None
+    sample_method, cb_weights, sample_weights = None, None, None
     if args.sampler:
-        weights = train_data.get_sampler_weights(args.sampler)
-        sample_method = torch.utils.data.WeightedRandomSampler(weights, len(train_data))
+        sample_weights = torch.tensor(train_data.get_sampler_weights(args.sampler))
+        sample_method = torch.utils.data.WeightedRandomSampler(sample_weights, len(train_data))
+    elif args.class_balance:
+        cb_weights = torch.tensor(train_data.get_cb_weights(args.class_balance))
 
     train_loader = torch.utils.data.DataLoader(train_data, batch_size=args.batch_size, 
         shuffle=False if args.sampler else True, num_workers=args.workers, pin_memory=True, 
@@ -145,7 +147,7 @@ def main():
     exp_logger, lr = None, None
 
     model = get_model(args)
-    criterion = losses.get_criterion(args)
+    criterion = losses.get_criterion(args, cb_weights)
 
     # optionally resume from a checkpoint
     if args.resume:

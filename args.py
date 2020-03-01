@@ -58,9 +58,9 @@ def parse_args():
     parser.add_argument('--criterion', default='nll', type=str,
                         help='criterion to optimize')
     parser.add_argument('--class-balance', default=None, type=str, metavar='cb',
-                        help='class balancing scheme, cannot be used with sampler')
+                        help='class balancing (loss augmenting) scheme from ["equal", "importance"], cannot be used with sampler')
     parser.add_argument('--sampler', default=None, type=str, metavar='sampling',
-                        help='sampling scheme, chose from ["equal", "importance"], cannot be used with class-balance')
+                        help='sampling scheme from ["equal", "importance"], cannot be used with class-balance')
     # misc settings
     parser.add_argument('--seed', type=int, default=42, metavar='S',
                         help='random seed (default: 42)')
