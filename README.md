@@ -1,4 +1,6 @@
 # pytorch-ecg
+[![Build Status](https://travis-ci.com/fv316/MAP583.svg?branch=master)](https://travis-ci.com/fv316/MAP583)
+
 [This](https://github.com/fv316/MAP583) is the project directory for Projet group 4: Healthcare (ECG & cardiology) for the [DL course @ école polytechnique](https://mlelarge.github.io/dataflowr-web/). For this project the MIT-BIH Arrhythmia Dataset is used and it is available on Kaggle [ECG Heartbeat Categorization Dataset](https://www.kaggle.com/shayanfazeli/heartbeat) and on Google drive [here](https://drive.google.com/file/d/17Rd4YpGwssSpk4xZAT5AyYskjvs95dAY/view?usp=sharing).
 
 This directory has been adapted from the github project [dldiy-gtsrb](https://github.com/abursuc/dldiy-gtsrb). Visit the link to see how a directry could be structured for easier testing of new architectures and parameters, tracking of results and improving of the models. View the [Directives list](https://github.com/fv316/MAP583/blob/master/notebooks/README.md) for next steps and grading instructions.
