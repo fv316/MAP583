@@ -18,7 +18,7 @@ function test_model() {
             --model-name ${model_name} \
             --batch-size 128 \
             --short-run \
-            ${other_flags} &> /dev/null
+            ${other_flags}
 
         echo "done"
     done
