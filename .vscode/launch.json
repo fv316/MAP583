@@ -21,7 +21,7 @@
             ],
             "args": [
                 "--dataset", "ecg",
-                "--name", "ecg_cnn1d_3_optadam_lr1e-3_lrReducePlateau0.5_bsz128_sampler",
+                "--name", "ecg_cnn1d_3_optadam_lr1e-3_lrReducePlateau0.5_bsz128_testing",
                 "--epochs", "1",
                 "--num-classes", "5",
                 "--root-dir", "ecg_data",
@@ -32,7 +32,7 @@
                 "--scheduler", "ReduceLROnPlateau", 
                 "--optimizer", "adam", 
                 "--tensorboard",
-                "--sampler", "equal"
+                "--short-run"
             ]
         },
         {
