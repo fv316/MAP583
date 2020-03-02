@@ -10,12 +10,8 @@ import warnings
 from sys import stdout
 from os import makedirs, remove
 import os
-from glob import glob
 import shutil
 
-def debug_print_files():
-    all_files = glob('./ecg_data/**/*')
-    print(all_files)
 
 class GoogleDriveDownloader:
     """
@@ -36,7 +32,6 @@ class GoogleDriveDownloader:
 
             session = requests.Session()
 
-            debug_print_files()
             print('Downloading {} into {}... '.format(
                 file_id, dest_path), end='')
             stdout.flush()
@@ -57,25 +52,22 @@ class GoogleDriveDownloader:
             GoogleDriveDownloader._save_response_content(
                 response, dest_path, showsize, current_download_size)
             print('Done.')
-            debug_print_files()
 
             if unzip:
                 try:
                     # Here we move into '.../unzipped/' to omit problems with extraction in the same folder
-                    print('Unzipping from {} to {}...'.format(dest_path, destination_directory), end='')
+                    print('Unzipping from {} to {}...'.format(
+                        dest_path, destination_directory), end='')
                     stdout.flush()
                     with zipfile.ZipFile(dest_path, 'r') as z:
                         z.extractall(destination_directory)
-
-                    debug_print_files()
 
                     # We need to move from '.../unzipped/'
                     print("Moving directories")
                     shutil.move(
                         os.path.join(destination_directory, "ecg_data"),
                         os.path.join(final_directory, "ecg"))
-                    
-                    debug_print_files()
+
                     print('Done.')
                     if del_zip:
                         try:

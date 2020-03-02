@@ -73,7 +73,7 @@ class ECGLoader(torch.utils.data.Dataset):
                 'Please chose a valid split type from ["train", "val", "test"]')
 
         if not os.path.exists(path):
-            self._build_dir(path, unzip=True, showsize=True, del_zip=False)
+            self._build_dir(path, unzip=True, showsize=True, del_zip=True)
 
         self.data = pd.read_csv(path, header=None)
         self.labels = self.data[187].astype(int)  # pandas time series type
