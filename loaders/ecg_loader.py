@@ -90,11 +90,19 @@ class ECGLoader(torch.utils.data.Dataset):
         extracted_folder = os.path.join(parent_path, 'ecg_data')
         print('extracted folder path: {}'.format(extracted_folder))
 
+        print('move from: {} to {}'.format((
+                extracted_folder), os.path.join(parent_path, name)))
+        shutil.move(extracted_folder,os.path.join(parent_path, name))
+
+        '''
         for i in self.data_sets:
             print('move from: {} to {}'.format(os.path.join(
                 extracted_folder, i), os.path.join(parent_path, name)))
             shutil.move(os.path.join(extracted_folder, i),
                         os.path.join(os.path.join(parent_path, name)), i)
+ 
+        '''
+        
 
         for r, d, f in os.walk(os.path.join(parent_path, name)):
             print(f)
