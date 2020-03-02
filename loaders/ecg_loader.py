@@ -73,8 +73,9 @@ class ECGLoader(torch.utils.data.Dataset):
                 'Please chose a valid split type from ["train", "val", "test"]')
 
         if not os.path.exists(path):
-            self._build_dir(path, True, True, True)
+            self._build_dir(path, unzip=True, showsize=True, del_zip=True)
 
+        print('seraching for data in path: {}'.format(path))
         self.data = pd.read_csv(path, header=None)
         self.labels = self.data[187].astype(int)  # pandas time series type
         repartition = self.labels.value_counts()
@@ -95,6 +96,10 @@ class ECGLoader(torch.utils.data.Dataset):
                 extracted_folder, i), os.path.join(parent_path, name)))
             shutil.move(os.path.join(extracted_folder, i),
                         os.path.join(os.path.join(parent_path, name)), i)
+
+        for r, d, f in os.walk(os.path.join(parent_path, name)):
+            print(f)
+
         os.rmdir(extracted_folder)
 
     def get_cb_weights(self, cb):
