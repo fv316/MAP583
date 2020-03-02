@@ -91,9 +91,10 @@ class ECGLoader(torch.utils.data.Dataset):
         print('extracted folder path: {}'.format(extracted_folder))
 
         for i in self.data_sets:
-            print('move from: {} to {}'.format(os.path.join(extracted_folder, i), os.path.join(parent_path, name)))
+            print('move from: {} to {}'.format(os.path.join(
+                extracted_folder, i), os.path.join(parent_path, name)))
             shutil.move(os.path.join(extracted_folder, i),
-                        os.path.join(parent_path, name))
+                        os.path.join(os.path.join(parent_path, name)), i)
         os.rmdir(extracted_folder)
 
     def get_cb_weights(self, cb):
