@@ -83,16 +83,15 @@ class ECGLoader(torch.utils.data.Dataset):
     def _build_dir(self, path, unzip, showsize, del_zip):
         parent_path = pathlib.Path(self.data_dir).parent
         name = os.path.basename(self.data_dir)  # always ecg
-        print(parent_path)
-        print(name)
+        print('parent path: {}'.format(parent_path))
+        print('base name: {}'.format(name))
         GoogleDriveDownloader.download_file_from_google_drive(
             file_id=GOOGLE_FILE_ID, dest_path=os.path.join(parent_path, ZIP_NAME), unzip=unzip, showsize=showsize, del_zip=del_zip)
         extracted_folder = os.path.join(parent_path, 'ecg_data')
-        print(extracted_folder)
+        print('extracted folder path: {}'.format(extracted_folder))
 
         for i in self.data_sets:
-            print(os.path.join(extracted_folder, i))
-            print(os.path.join(parent_path, name))
+            print('move from: {} to {}'.format(os.path.join(extracted_folder, i), os.path.join(parent_path, name)))
             shutil.move(os.path.join(extracted_folder, i),
                         os.path.join(parent_path, name))
         os.rmdir(extracted_folder)
