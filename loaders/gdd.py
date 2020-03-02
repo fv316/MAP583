@@ -10,7 +10,12 @@ import warnings
 from sys import stdout
 from os import makedirs, remove
 from os.path import dirname, exists
+from glob import glob
 
+
+def debug_print_files():
+    all_files = glob('./**/*')
+    print(all_files)
 
 class GoogleDriveDownloader:
     """
@@ -30,6 +35,7 @@ class GoogleDriveDownloader:
 
             session = requests.Session()
 
+            debug_print_files()
             print('Downloading {} into {}... '.format(
                 file_id, dest_path), end='')
             stdout.flush()
@@ -50,6 +56,7 @@ class GoogleDriveDownloader:
             GoogleDriveDownloader._save_response_content(
                 response, dest_path, showsize, current_download_size)
             print('Done.')
+            debug_print_files()
 
             if unzip:
                 try:
@@ -57,6 +64,7 @@ class GoogleDriveDownloader:
                     stdout.flush()
                     with zipfile.ZipFile(dest_path, 'r') as z:
                         z.extractall(destination_directory)
+                    debug_print_files()
                     print('Done.')
                     if del_zip:
                         try:
