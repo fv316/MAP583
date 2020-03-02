@@ -3,7 +3,6 @@ import numpy as np
 import torch
 import pandas as pd
 from loaders.gdd import GoogleDriveDownloader
-import pathlib
 import shutil
 
 
@@ -73,7 +72,7 @@ class ECGLoader(torch.utils.data.Dataset):
                 'Please chose a valid split type from ["train", "val", "test"]')
 
         if not os.path.exists(path):
-            self._build_dir(path, unzip=True, showsize=True, del_zip=True)
+            self._build_dir(unzip=True, showsize=True, del_zip=True)
 
         print('seraching for data in path: {}'.format(path))
         self.data = pd.read_csv(path, header=None)
@@ -81,8 +80,8 @@ class ECGLoader(torch.utils.data.Dataset):
         repartition = self.labels.value_counts()
         self.class_weights = np.array([1./repartition[i] for i in range(5)])
 
-    def _build_dir(self, path, unzip, showsize, del_zip):
-        parent_path = pathlib.Path(self.data_dir).parent
+    def _build_dir(self, unzip, showsize, del_zip):
+        parent_path = os.path.dirname(self.data_dir)
         name = os.path.basename(self.data_dir)  # always ecg
         print('parent path: {}'.format(parent_path))
         print('base name: {}'.format(name))
