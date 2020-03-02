@@ -18,17 +18,6 @@ from args import parse_args
 from torch.utils.tensorboard import SummaryWriter
 
 
-'''
- o8o               o8o      .
- `"'               `"'    .o8
-oooo  ooo. .oo.   oooo  .o888oo
-`888  `888P"Y88b  `888    888
- 888   888   888   888    888
- 888   888   888   888    888 .
-o888o o888o o888o o888o   "888"
-'''
-
-
 def init_logger(args, model):
     # set loggers
     exp_name = args.name
@@ -38,19 +27,6 @@ def init_logger(args, model):
     exp_logger.add_meters(
         'hyperparams', {'learning_rate': metrics.ValueMeter()})
     return exp_logger
-
-
-'''
-          oooo                       .
-          `888                     .o8
- .ooooo.   888  oooo  oo.ooooo.  .o888oo  .oooo.o
-d88' `"Y8  888 .8P'    888' `88b   888   d88(  "8
-888        888888.     888   888   888   `"Y88b.
-888   .o8  888 `88b.   888   888   888 . o.  )88b
-`Y8bod8P' o888o o888o  888bod8P'   "888" 8""888P'
-                       888
-                      o888o
-'''
 
 
 def save_checkpoint(args, state, is_best, filename='checkpoint.pth.tar'):
@@ -101,17 +77,6 @@ def load_checkpoint(args, model):
     else:
         print('checkpoint file {} does not exist!'.format(filename))
         return None
-
-
-'''
-                             o8o
-                             `"'
-ooo. .oo.  .oo.    .oooo.   oooo  ooo. .oo.
-`888P"Y88bP"Y88b  `P  )88b  `888  `888P"Y88b
- 888   888   888   .oP"888   888   888   888
- 888   888   888  d8(  888   888   888   888
-o888o o888o o888o `Y888""8o o888o o888o o888o
-'''
 
 
 def main():

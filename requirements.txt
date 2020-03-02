@@ -1,5 +1,6 @@
 absl-py==0.9.0
 attrs==19.3.0
+autopep8==1.5
 backcall==0.1.0
 bleach==3.1.1
 cachetools==4.0.0
@@ -47,6 +48,7 @@ protobuf==3.11.3
 ptyprocess==0.6.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
+pycodestyle==2.5.0
 Pygments==2.5.2
 pyparsing==2.4.6
 pyrsistent==0.15.7
