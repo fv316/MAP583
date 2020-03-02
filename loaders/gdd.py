@@ -9,8 +9,7 @@ import zipfile
 import warnings
 from sys import stdout
 from os import makedirs, remove
-import os
-import shutil
+from os.path import dirname, exists
 
 
 class GoogleDriveDownloader:
@@ -23,12 +22,11 @@ class GoogleDriveDownloader:
 
     @staticmethod
     def download_file_from_google_drive(file_id, dest_path, overwrite=False, unzip=False, showsize=False, del_zip=False):
-        final_directory = os.path.dirname(dest_path)
-        destination_directory = os.path.join(final_directory, "unzipped")
-        if not os.path.exists(destination_directory):
+        destination_directory = dirname(dest_path)
+        if not exists(destination_directory):
             makedirs(destination_directory)
 
-        if not os.path.exists(dest_path) or overwrite:
+        if not exists(dest_path) or overwrite:
 
             session = requests.Session()
 
@@ -55,19 +53,10 @@ class GoogleDriveDownloader:
 
             if unzip:
                 try:
-                    # Here we move into '.../unzipped/' to omit problems with extraction in the same folder
-                    print('Unzipping from {} to {}...'.format(
-                        dest_path, destination_directory), end='')
+                    print('Unzipping...', end='')
                     stdout.flush()
                     with zipfile.ZipFile(dest_path, 'r') as z:
                         z.extractall(destination_directory)
-
-                    # We need to move from '.../unzipped/'
-                    print("Moving directories")
-                    shutil.move(
-                        os.path.join(destination_directory, "ecg_data"),
-                        os.path.join(final_directory, "ecg"))
-
                     print('Done.')
                     if del_zip:
                         try:

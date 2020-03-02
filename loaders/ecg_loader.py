@@ -73,7 +73,7 @@ class ECGLoader(torch.utils.data.Dataset):
                 'Please chose a valid split type from ["train", "val", "test"]')
 
         if not os.path.exists(path):
-            self._build_dir(path, unzip=True, showsize=True, del_zip=True)
+            self._build_dir(path, True, True, True)
 
         self.data = pd.read_csv(path, header=None)
         self.labels = self.data[187].astype(int)  # pandas time series type
@@ -83,9 +83,19 @@ class ECGLoader(torch.utils.data.Dataset):
     def _build_dir(self, path, unzip, showsize, del_zip):
         parent_path = pathlib.Path(self.data_dir).parent
         name = os.path.basename(self.data_dir)  # always ecg
-
+        print(parent_path)
+        print(name)
         GoogleDriveDownloader.download_file_from_google_drive(
-            file_id=GOOGLE_FILE_ID, dest_path=os.path.join(parent_path, ZIP_NAME), unzip=unzip, showsize=showsize, del_zip=del_zip, overwrite=True)
+            file_id=GOOGLE_FILE_ID, dest_path=os.path.join(parent_path, ZIP_NAME), unzip=unzip, showsize=showsize, del_zip=del_zip)
+        extracted_folder = os.path.join(parent_path, 'ecg_data')
+        print(extracted_folder)
+
+        for i in self.data_sets:
+            print(os.path.join(extracted_folder, i))
+            print(os.path.join(parent_path, name))
+            shutil.move(os.path.join(extracted_folder, i),
+                        os.path.join(parent_path, name))
+        os.rmdir(extracted_folder)
 
     def get_cb_weights(self, cb):
         label_importance = self.get_label_importance(cb)
