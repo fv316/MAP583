@@ -4,6 +4,7 @@ from models.lenet import lenet
 from models.cnn1d import cnn1d
 from models.resnet1d import resnet1d
 from models.resnet1d_v2 import resnet1d_v2
+from models.lstm import lstm
 
 
 def get_model(args):
@@ -28,6 +29,8 @@ def get_model(args):
     elif args.arch == 'resnet1d_v2':
         model = model_instance(
             args.model_name, args.num_classes, args.input_channels)
+    elif args.arch == 'lstm':
+        model = model_instance(args.model_name, args.num_classes)
     else:
         raise 'Model {} not available'.format(args.arch)
 
@@ -41,5 +44,6 @@ def _get_model_instance(name):
         'lenet': lenet,
         'cnn1d': cnn1d,
         'resnet1d': resnet1d,
-        'resnet1d_v2': resnet1d_v2
+        'resnet1d_v2': resnet1d_v2,
+        'lstm': lstm
     }[name]
