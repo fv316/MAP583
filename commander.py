@@ -156,6 +156,7 @@ def main():
     exp_logger, lr = None, None
 
     model = get_model(args)
+    tb_writer.add_graph(model, next(iter(train_loader))[0])
     criterion = losses.get_criterion(args, cb_weights)
 
     # optionally resume from a checkpoint
@@ -182,7 +183,7 @@ def main():
                                                          phase='test', num_classes=args.num_classes), batch_size=args.batch_size,
                                                   shuffle=False, num_workers=args.workers, pin_memory=True)
         trainer.test(args, test_loader, model, criterion, args.start_epoch,
-                     eval_score=metrics.accuracy_classif, output_dir=args.out_pred_dir, has_gt=True)
+                     eval_score=metrics.accuracy_classif, output_dir=args.out_pred_dir, has_gt=True, tb_writer=tb_writer)
         sys.exit()
 
     is_best = True
@@ -223,6 +224,13 @@ def main():
             'exp_logger': exp_logger,
             'res_list': res_list,
         }, is_best)
+
+        for name, param in model.named_parameters():
+            tb_writer.add_histogram(name, param, epoch)
+            try:
+                tb_writer.add_histogram(f'{name}.grad', param.grad, epoch)
+            except:
+                print(f'{name}.grad not plottable on Tensorboard')
 
     if args.tensorboard:
         tb_writer.close()

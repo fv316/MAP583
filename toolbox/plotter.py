@@ -55,21 +55,23 @@ def save_as_best(is_best, out_fn, extension='png'):
             f'.{extension}', f'_best.{extension}'))
 
 
-def plot_confusion_matrix(cm, classnames, out_fn,
-                          normalize=False,
-                          title='Confusion matrix',
-                          cmap=plt.cm.Blues):
+def plot_confusion_matrix(cm, out_fn, classnames=None, normalize=False, cmap=plt.cm.Blues):
     """
     This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
     """
 
+    if classnames == None:
+        classnames = [str(i) for i in range(len(cm))]
+
     # classnames =  np.array(classnames)
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        print("Normalized confusion matrix")
+        title = "Normalized confusion matrix"
+        print(title)
     else:
-        print('Confusion matrix, without normalization')
+        title = 'Confusion matrix, without normalization'
+        print(title)
 
     fig, ax = plt.subplots()
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
@@ -81,11 +83,6 @@ def plot_confusion_matrix(cm, classnames, out_fn,
 
     plt.xticks(tick_marks, classnames, rotation=0, fontsize=8)
     plt.yticks(tick_marks, classnames, rotation=0, fontsize=8)
-
-    # ax.set_xticks(tick_marks)
-    #ax.set_xticklabels(classnames, rotation=45, fontsize=5)
-    # ax.set_yticks(tick_marks)
-    #ax.set_yticklabels(classnames, rotation=45, fontsize=5)
 
     formating = '.2f' if normalize else 'd'
     thresh = cm.max() / 2.
