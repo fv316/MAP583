@@ -9,43 +9,40 @@ def list_directories(path):
     return [directory for directory in os.listdir(path) if os.path.isdir(os.path.join(path, directory))]
 
 
-def extract_name(args):
-    existing_models = list_directories('ecg_data/ecg/runs')
-    # We number models with dots before the numbers
+# Gets model version as latest, bump or version specified as integer
+def get_version(args):
+    if args.version is None:
+        print('Please define --version latest xor --version bump xor --version N')
+        exit(1)
+
     name_prefix = 'ecg_{}.'.format(args.model_name)
 
+    existing_models = list_directories('ecg_data/ecg/runs')
     models_with_name = [model for model in existing_models if model.startswith(name_prefix)]
     if len(models_with_name) == 0:
-        # This is the first model with this numeration
-        return '{}0'.format(name_prefix)
-    else:
-        model_numbers = [int(model.split('.')[-1]) for model in models_with_name]
-        # TODO: add detection of existing model
-        print("I don't know yet what to do")
-        print("Model already defined, versions available: {}".format(model_numbers))
+        return 0
 
-        version_is_defined = (args.version is not None)
-        at_least_two_arguments = sum([
-            args.version_latest,
-            args.version_bump,
-            version_is_defined
-        ]) > 1
+    model_numbers = [int(model.split('.')[-1]) for model in models_with_name]
 
-        if at_least_two_arguments:
-            print("You can define only one of --version-latest, --version-bump and --version")
-            exit(1)
-        elif args.version is not None:
+    if args.version != 'latest' and args.version != 'bump':
+        try: 
+            value = int(args.version)
             print("Using explicit version")
-            return '{}{}'.format(name_prefix, args.version)
-        elif args.version_latest:
-            print("Using latest version")
-            return '{}{}'.format(name_prefix, max(model_numbers))
-        elif args.version_bump:
-            print("Creating newer version")
-            return '{}{}'.format(name_prefix, max(model_numbers) + 1)
-        else:
-            print('Please define --version-latest xor --version-bump xor --version')
+            return value
+        except ValueError:
+            print("Couldn't parse version as a number: {}".format(args.version))
             exit(1)
+    else:
+        if args.version == 'latest':
+            print("Using latest version")
+            return max(model_numbers)
+        elif args.version == 'bump':
+            print("Creating newer version")
+            return max(model_numbers) + 1
+
+
+def extract_name(args):
+    return 'ecg_{}.{}'.format(args.model_name, args.version)
 
 
 def parse_args():
@@ -66,12 +63,8 @@ def parse_args():
     # model settings
     parser.add_argument('--model-name', type=str,
                         help='type of model to be used. Particular instance of a given architecture, e.g. cnn1d_3')
-    parser.add_argument('--version-latest', type=bool, default=False,
-                        help='Use the latest version of the model if available')
-    parser.add_argument('--version-bump', type=bool, default=False,
-                        help='Create a new version of the model')
-    parser.add_argument('--version', type=int, default=None,
-                        help='Explicitly choose the version')
+    parser.add_argument('--version', type=str, default=None,
+                        help='Chosse between [latest] [bump] or number [N]')
     
     parser.add_argument('--resume', default='', type=str, metavar='PATH',
                         help='which checkpoint to resume from possible values ["latest", "best", epoch]')
@@ -123,6 +116,7 @@ def parse_args():
     args = parser.parse_args()
 
     # update args
+    args.version = get_version(args)
     args.name = extract_name(args)
     args.data_dir = '{}/{}'.format(args.root_dir, args.dataset)
     args.log_dir = '{}/runs/{}/'.format(args.data_dir, args.name)
