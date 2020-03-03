@@ -192,9 +192,9 @@ def resnet50(pretrained=False, **kwargs):
     return model
 
 
-def resnet(model_name, num_classes, input_channels, pretrained=False):
+def resnet(model_name, num_classes, **kwargs):
     return{
-        'resnet18': resnet18(num_classes=num_classes, input_channels=input_channels, pretrained=pretrained),
-        'resnet34': resnet34(num_classes=num_classes, input_channels=input_channels, pretrained=pretrained),
-        'resnet50': resnet50(num_classes=num_classes, input_channels=input_channels, pretrained=pretrained),
+        'resnet18': resnet18(num_classes=num_classes, input_channels=1, pretrained=False),
+        'resnet34': resnet34(num_classes=num_classes, input_channels=1, pretrained=False),
+        'resnet50': resnet50(num_classes=num_classes, input_channels=1, pretrained=False),
     }[model_name]

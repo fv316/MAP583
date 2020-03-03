@@ -36,7 +36,7 @@ def lenet5(**kwargs):
     return model
 
 
-def lenet(model_name, num_classes, input_channels, pretrained=False):
+def lenet(model_name, num_classes, **kwargs):
     return{
-        'lenet5': lenet5(num_classes=num_classes, input_channels=input_channels),
+        'lenet5': lenet5(num_classes=num_classes, input_channels=1),
     }[model_name]

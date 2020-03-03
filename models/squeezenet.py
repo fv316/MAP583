@@ -136,8 +136,8 @@ def squeezenet1_1(pretrained=False, **kwargs):
     return model
 
 
-def squeezenet(model_name, num_classes, input_channels, pretrained=False):
+def squeezenet(model_name, num_classes, **kwargs):
     return{
-        'squeezenet1_0': squeezenet1_0(num_classes=num_classes, input_channels=input_channels, pretrained=pretrained),
-        'squeezenet1_1': squeezenet1_1(num_classes=num_classes, input_channels=input_channels, pretrained=pretrained),
+        'squeezenet1_0': squeezenet1_0(num_classes=num_classes, input_channels=1, pretrained=False),
+        'squeezenet1_1': squeezenet1_1(num_classes=num_classes, input_channels=1, pretrained=False),
     }[model_name]

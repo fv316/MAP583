@@ -105,8 +105,8 @@ def resnet1d_18(pretrained=False, **kwargs):
     return model
 
 
-def resnet1d(model_name, num_classes, input_channels, pretrained=False):
+def resnet1d(model_name, num_classes, **kwargs):
     return{
-        'resnet1d_18': resnet1d_18(num_classes=num_classes, input_channels=input_channels),
-        'resnet1d_10': resnet1d_10(num_classes=num_classes, input_channels=input_channels),
+        'resnet1d_18': resnet1d_18(num_classes=num_classes, input_channels=1),
+        'resnet1d_10': resnet1d_10(num_classes=num_classes, input_channels=1),
     }[model_name]

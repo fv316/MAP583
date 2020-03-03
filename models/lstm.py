@@ -50,7 +50,7 @@ def lstm_1(**kwargs):
     return model
 
 
-def lstm(model_name, num_classes, pretrained=False):
+def lstm(model_name, num_classes, **kwargs):
     return{
         'lstm_1': lstm_1(num_classes=num_classes),
     }[model_name]

@@ -34,7 +34,6 @@ def parse_args():
 
     # data settings
     parser.add_argument('--num-classes', default=0, type=int)
-    parser.add_argument('--input-channels', default=1, type=int)
     # number of workers for the dataloader
     parser.add_argument('-j', '--workers', type=int, default=1)
 
