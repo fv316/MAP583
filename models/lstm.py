@@ -9,7 +9,6 @@ class LSTMModel(nn.Module):
         self.hidden_dim = hidden_dim
         self.layer_dim = layer_dim
 
-        # Building your LSTM
         # batch_first=True causes input/output tensors to be of shape
         # (batch_dim, seq_dim, feature_dim)
         self.lstm = nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True)
@@ -24,33 +23,28 @@ class LSTMModel(nn.Module):
             self.softmax = nn.LogSoftmax(dim=1)
 
     def forward(self, x):
-        # Initialize hidden state with zeros
         h_0 = torch.zeros(self.layer_dim, x.size(
             0), self.hidden_dim).requires_grad_()
-
-        # Initialize cell state
         c_0 = torch.zeros(self.layer_dim, x.size(
             0), self.hidden_dim).requires_grad_()
 
-        # We need to detach as we are doing truncated backpropagation through time (BPTT)
-        # If we don't, we'll backprop all the way to the start even after going through another batch
         out, (hn, cn) = self.lstm(x, (h_0.detach(), c_0.detach()))
 
-        # Index hidden state of last time step
-        # out.size() --> 100, 28, 100
-        # out[:, -1, :] --> 100, 100 --> just want last time step hidden states!
         out = self.fc(out[:, -1, :])
-        # out.size() --> 100, 10
+
         out = self.softmax(out)
+
         return out
 
 
-def lstm_1(**kwargs):
+def lstm_x(**kwargs):
     model = LSTMModel(**kwargs)
     return model
 
 
 def lstm(model_name, num_classes, **kwargs):
     return{
-        'lstm_1': lstm_1(num_classes=num_classes),
+        'lstm_1': lstm_x(num_classes=num_classes, layer_dim=1),
+        'lstm_2': lstm_x(num_classes=num_classes, layer_dim=2),
+        'lstm_3': lstm_x(num_classes=num_classes, layer_dim=3),
     }[model_name]

@@ -199,7 +199,7 @@ def validate(args, val_loader, model, criterion, logger, epoch, eval_score=None,
 
 
 def test(args, eval_data_loader, model, criterion, epoch, eval_score=None,
-         output_dir='pred', has_gt=True, print_freq=10):
+         output_dir='pred', has_gt=True, tb_writer=None, print_freq=10):
 
     model.eval()
     meters = metrics.make_meters(args.num_classes)
@@ -275,7 +275,7 @@ def test(args, eval_data_loader, model, criterion, epoch, eval_score=None,
 
     # TODO: add class names
     cm = np.array(meters["confusion_matrix"].value())
-    plotter.plot_confusion_matrix(cm, [str(i) for i in range(len(cm))], os.path.join(
-        output_dir, 'test_norm_cm_ep{}.png'.format(epoch)), normalize=True, title='Normalized Confusion Matrix')
-    plotter.plot_confusion_matrix(cm, [str(i) for i in range(len(cm))], os.path.join(
-        output_dir, 'test_cm_ep{}.png'.format(epoch)), normalize=False, title='Confusion Matrix')
+    plotter.plot_confusion_matrix(cm, os.path.join(
+        output_dir, 'norm_cm_ep{}.png'.format(epoch)), normalize=True)
+    plotter.plot_confusion_matrix(cm, os.path.join(
+        output_dir, 'cm_ep{}.png'.format(epoch)))
