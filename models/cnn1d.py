@@ -39,7 +39,7 @@ def cnn1d_3(**kwargs):
     return model
 
 
-def cnn1d(model_name, num_classes, input_channels, pretrained=False):
+def cnn1d(model_name, num_classes):
     return{
-        'cnn1d_3': cnn1d_3(num_classes=num_classes, input_channels=input_channels),
+        'cnn1d_3': cnn1d_3(num_classes=num_classes, input_channels=1),
     }[model_name]

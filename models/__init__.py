@@ -8,36 +8,16 @@ from models.lstm import lstm
 
 
 def get_model(args):
-    model_instance = _get_model_instance(args.arch)
+    arch = get_arch_from_model(args.model_name)
+    print('Fetching model %s - %s ' % (arch, args.model_name))
 
-    print('Fetching model %s - %s ' % (args.arch, args.model_name))
-    if args.arch == 'resnet':
-        model = model_instance(
-            args.model_name, args.num_classes, args.input_channels, args.pretrained)
-    elif args.arch == 'squeezenet':
-        model = model_instance(
-            args.model_name, args.num_classes, args.input_channels, args.pretrained)
-    elif args.arch == 'lenet':
-        model = model_instance(
-            args.model_name, args.num_classes, args.input_channels)
-    elif args.arch == 'cnn1d':
-        model = model_instance(
-            args.model_name, args.num_classes, args.input_channels)
-    elif args.arch == 'resnet1d':
-        model = model_instance(
-            args.model_name, args.num_classes, args.input_channels)
-    elif args.arch == 'resnet1d_v2':
-        model = model_instance(
-            args.model_name, args.num_classes, args.input_channels)
-    elif args.arch == 'lstm':
-        model = model_instance(args.model_name, args.num_classes)
-    else:
-        raise 'Model {} not available'.format(args.arch)
+    model_generator = get_generator(arch)
+    model = model_generator(args.model_name, num_classes=args.num_classes)
 
     return model
 
 
-def _get_model_instance(name):
+def get_generator(arch):
     return {
         'resnet': resnet,
         'squeezenet': squeezenet,
@@ -46,4 +26,21 @@ def _get_model_instance(name):
         'resnet1d': resnet1d,
         'resnet1d_v2': resnet1d_v2,
         'lstm': lstm
-    }[name]
+    }[arch]
+
+
+def get_arch_from_model(model_name):
+    return {
+        'cnn1d_3': 'cnn1d',
+        'lenet5': 'lenet',
+        'lstm_1': 'lstm',
+        'resnet18': 'resnet',
+        'resnet34': 'resnet',
+        'resnet50': 'resnet',
+        'resnet1d_v2_18': 'resnet1d_v2',
+        'resnet1d_v2_10': 'resnet1d_v2',
+        'resnet1d_18': 'resnet1d',
+        'resnet1d_18': 'resnet1d',
+        'squeezenet1_0': 'squeezenet',
+        'squeezenet1_1': 'squeezenet'
+    }[model_name]
