@@ -21,11 +21,9 @@
             ],
             "args": [
                 "--dataset", "ecg",
-                "--name", "ecg_cnn1d_3_optadam_lr1e-3_lrReducePlateau0.5_bsz128_testing",
                 "--epochs", "1",
                 "--num-classes", "5",
                 "--root-dir", "ecg_data",
-                "--arch", "cnn1d",
                 "--model-name", "cnn1d_3",
                 "--batch-size", "128", 
                 "--lr", "0.001", 
@@ -66,6 +64,7 @@
             "stopOnEntry": true,
             "pythonPath": "${config:python.pythonPath}",
             "module": "module.name",
+            "program": "${file}",
             "cwd": "${workspaceRoot}",
             "env": {},
             "envFile": "${workspaceRoot}/.env",
@@ -175,6 +174,7 @@
             "stopOnEntry": true,
             "pythonPath": "${config:python.pythonPath}",
             "cwd": "${workspaceRoot}",
+            "program": "${file}",
             "env": {},
             "envFile": "${workspaceRoot}/.env",
             "args": [

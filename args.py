@@ -1,7 +1,6 @@
 import sys
 import argparse
 import os
-
 import torch
 
 
@@ -15,17 +14,18 @@ def get_version(args):
         print('Please define --version latest xor --version bump xor --version N')
         exit(1)
 
-    name_prefix = 'ecg_{}.'.format(args.model_name)
+    name_prefix = _extract_prefix(args)
 
     existing_models = list_directories('ecg_data/ecg/runs')
-    models_with_name = [model for model in existing_models if model.startswith(name_prefix)]
+    models_with_name = [
+        model for model in existing_models if model.startswith(name_prefix)]
     if len(models_with_name) == 0:
-        return 0
+        return 1
 
     model_numbers = [int(model.split('.')[-1]) for model in models_with_name]
 
-    if args.version != 'latest' and args.version != 'bump':
-        try: 
+    if not (args.version == 'latest' or args.version == 'bump'):
+        try:
             value = int(args.version)
             print("Using explicit version")
             return value
@@ -41,8 +41,14 @@ def get_version(args):
             return max(model_numbers) + 1
 
 
+def _extract_prefix(args):
+    return '{}_{}_op{}_{}_lr{}_loss{}_cb{}_sampler{}_'.format(
+        args.dataset, args.model_name, args.optimizer, args.scheduler, args.lr,
+        args.criterion, args.class_balance, args.sampler)
+
+
 def extract_name(args):
-    return 'ecg_{}.{}'.format(args.model_name, args.version)
+    return _extract_prefix(args) + args.version
 
 
 def parse_args():
@@ -63,9 +69,9 @@ def parse_args():
     # model settings
     parser.add_argument('--model-name', type=str,
                         help='type of model to be used. Particular instance of a given architecture, e.g. cnn1d_3')
-    parser.add_argument('--version', type=str, default=None,
+    parser.add_argument('--version', type=str, default='bump',
                         help='Chosse between [latest] [bump] or number [N]')
-    
+
     parser.add_argument('--resume', default='', type=str, metavar='PATH',
                         help='which checkpoint to resume from possible values ["latest", "best", epoch]')
     parser.add_argument('--pretrained', action='store_true',
@@ -78,7 +84,7 @@ def parse_args():
 
     # training settings
     parser.add_argument('--start-epoch', type=int, default=1)
-    parser.add_argument('--step', type=int, default=20,
+    parser.add_argument('--step', type=int, default=5,
                         help='frequency of updating learning rate, given in epochs')
     parser.add_argument('--batch-size', type=int, default=128, metavar='N',
                         help='input batch size for training (default: 4)')
