@@ -24,13 +24,16 @@
                 "--epochs", "1",
                 "--num-classes", "5",
                 "--root-dir", "ecg_data",
-                "--model-name", "cnn1d_3",
+                "--model-name", "resnet1d_v2_10",
                 "--batch-size", "128", 
                 "--lr", "0.001", 
                 "--scheduler", "ReduceLROnPlateau", 
                 "--optimizer", "adam", 
                 "--tensorboard",
-                "--short-run"
+                "--version", "1",
+                "--verbose",
+                "--test",
+                "--resume", "best"
             ]
         },
         {

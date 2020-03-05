@@ -22,7 +22,7 @@ def get_version(args):
     if len(models_with_name) == 0:
         return 1
 
-    model_numbers = [int(model.split('.')[-1]) for model in models_with_name]
+    model_numbers = [int(model.split('_')[-1]) for model in models_with_name]
 
     if not (args.version == 'latest' or args.version == 'bump'):
         try:
@@ -42,13 +42,17 @@ def get_version(args):
 
 
 def _extract_prefix(args):
-    return '{}_{}_op{}_{}_lr{}_loss{}_cb{}_sampler{}_'.format(
-        args.dataset, args.model_name, args.optimizer, args.scheduler, args.lr,
-        args.criterion, args.class_balance, args.sampler)
+    prefix = '{}_{}_op{}_{}_lr{}_{}_bs{}_'.format(
+        args.dataset, args.model_name, args.optimizer, args.scheduler, args.lr, args.criterion, args.batch_size)
+    if args.class_balance:
+        prefix += 'cb{}_'.format(args.class_balance)
+    elif args.sampler:
+        prefix += 'samp{}_'.format(args.sampler)
+    return prefix
 
 
 def extract_name(args):
-    return _extract_prefix(args) + args.version
+    return _extract_prefix(args) + '{}'.format(args.version)
 
 
 def parse_args():
