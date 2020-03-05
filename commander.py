@@ -118,9 +118,10 @@ def main():
     best_score, best_epoch = -1, -1
     if len(sys.argv) > 1:
         args = parse_args()
-        print('----- Experiments parameters -----')
-        for k, v in args.__dict__.items():
-            print(k, ':', v)
+        if args.verbose:
+            print('----- Experiments parameters -----')
+            for k, v in args.__dict__.items():
+                print(k, ':', v)
     else:
         print('Please provide some parameters for the current experiment. Check-out arg.py for more info!')
         sys.exit()
