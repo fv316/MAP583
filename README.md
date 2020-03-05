@@ -1,7 +1,7 @@
 # pytorch-ecg
 [This](https://github.com/fv316/MAP583) is the project directory for Projet group 4: Healthcare (ECG & cardiology) for the [DL course @ école polytechnique](https://mlelarge.github.io/dataflowr-web/). For this project the MIT-BIH Arrhythmia Dataset is used and it is available on Kaggle [ECG Heartbeat Categorization Dataset](https://www.kaggle.com/shayanfazeli/heartbeat) and on Google drive [here](https://drive.google.com/file/d/17Rd4YpGwssSpk4xZAT5AyYskjvs95dAY/view?usp=sharing).
 
-This directory has been adapted from the github project [dldiy-gtsrb](https://github.com/abursuc/dldiy-gtsrb). Visit the link to see how a directry could be structured for easier testing of new architectures and parameters, tracking of results and improving of the models. View the [Directives list](https://github.com/fv316/MAP583/blob/master/notebooks/README.md) for next steps and grading instructions.
+This directory has been adapted from the github project [dldiy-gtsrb](https://github.com/abursuc/dldiy-gtsrb). Visit the link to see how a directry could be structured for easier testing of new architectures and parameters, tracking of results and improving of the models. View the [TODO list](https://github.com/fv316/MAP583/blob/master/notebooks/README.md) for next steps and grading instructions.
 
 ## Data
 
@@ -47,7 +47,7 @@ Experiments can be launched by calling `commander.py` and a set of input argumen
 
 Here is a typical launch command and some comments:
 
-* `python commander.py --dataset ecg --epochs 20 --num-classes 5 --root-dir ecg_data  --model-name resnet1d_10 --batch-size 128 --lr 0.001 --scheduler ReduceLROnPlateau --optimizer adam --lr-decay 0.5 --step 15 --workers 4 --tensorboard --sampler equal --version-bump` 
+* `python commander.py --dataset ecg --epochs 20 --num-classes 5 --root-dir ecg_data  --model-name resnet1d_10 --batch-size 128 --lr 0.001 --scheduler ReduceLROnPlateau --optimizer adam --lr-decay 0.5 --step 15 --workers 4 --tensorboard --sampler equal --version bump` 
   + this experiment is on the _ecg_ dataset which can be found in `--root-dir/ecg` trained over _resnet1d_10_. It optimizes with _adam_ with initial learning rate ( `--lr` ) of `1e-3` which is decayed by half whenever the `--scheduler` _ReduceLRonPlateau_ does not see an improvement in the validation accuracy for more than `--step` epochs. Input sequences are of size 187. In addition it saves intermediate results to `--tensorboard` .
   + when debugging you can add the `--short-run` argument which performs training and validation epochs of 10 mini-batches. This allows testing your entire pipeline before launching an experiment
   + if you want to resume a previously paused experiment you can use the `--resume` flag which can continue the training from _best_, _latest_ or a specifically designated epoch.
@@ -57,15 +57,15 @@ Here is a typical launch command and some comments:
 
 Here are some more typical launch commands:
 
-* `python commander.py --model-name cnn1d_3 --tensorboard --version-bump` 
+* `python commander.py --model-name cnn1d_3 --tensorboard --version bump` 
 
-* `python commander.py --model-name resnet1d_10 --tensorboard --version-bump` 
+* `python commander.py --model-name resnet1d_10 --tensorboard --version bump` 
 
-* `python commander.py --model-name resnet1d_v2 --tensorboard --version-bump` 
+* `python commander.py --model-name resnet1d_v2 --tensorboard --version bump` 
 
 To compute results on the testing run:
 
-* `python commander.py --model-name cnn1d_3 --tensorboard --test --resume best --version-latest` 
+* `python commander.py --model-name cnn1d_3 --tensorboard --test --resume best --version latest` 
 
 or in the case of testing older models
 
