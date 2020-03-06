@@ -72,6 +72,8 @@ def parse_args():
                         default=False, help='use pre-trained model')
     parser.add_argument('--masking', default=False, type=bool, const=True, nargs='?',
                         help='Whether to use masking when training the models')
+    parser.add_argument('--lstm-window', default=187, type=int,
+                        help="Size of sliding window used in lstm")
 
     # data settings
     parser.add_argument('--num-classes', default=5, type=int)

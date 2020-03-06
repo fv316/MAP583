@@ -4,15 +4,16 @@ import torch
 
 
 class LSTMModel(nn.Module):
-    def __init__(self, num_classes, input_dim=187, hidden_dim=100, layer_dim=1):
+    def __init__(self, num_classes, sliding_window=187, hidden_dim=100, layer_dim=1):
         super(LSTMModel, self).__init__()
         self.hidden_dim = hidden_dim
         self.layer_dim = layer_dim
 
+        self.sliding_window = sliding_window
         # Building your LSTM
         # batch_first=True causes input/output tensors to be of shape
         # (batch_dim, seq_dim, feature_dim)
-        self.lstm = nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True)
+        self.lstm = nn.LSTM(sliding_window, hidden_dim, layer_dim, batch_first=True)
 
         self.fc = nn.Linear(hidden_dim, num_classes)
 
@@ -24,6 +25,8 @@ class LSTMModel(nn.Module):
             self.softmax = nn.LogSoftmax(dim=1)
 
     def forward(self, x):
+        x = x.unfold(2, self.sliding_window, 1).squeeze(1)
+
         # Initialize hidden state with zeros
         h_0 = torch.zeros(self.layer_dim, x.size(
             0), self.hidden_dim).requires_grad_()
@@ -51,6 +54,10 @@ def lstm_1(**kwargs):
 
 
 def lstm(model_name, num_classes, **kwargs):
+    lstm_args = {}
+    if "lstm_window" in kwargs:
+        lstm_args["sliding_window"] = kwargs["lstm_window"]
+
     return{
-        'lstm_1': lstm_1(num_classes=num_classes),
+        'lstm_1': lstm_1(num_classes=num_classes, **lstm_args),
     }[model_name]

@@ -12,7 +12,10 @@ def get_model(args):
     print('Fetching model %s - %s ' % (arch, args.model_name))
 
     model_generator = get_generator(arch)
-    model = model_generator(args.model_name, num_classes=args.num_classes, masking=args.masking)
+    model = model_generator(args.model_name,
+                            num_classes=args.num_classes,
+                            masking=args.masking,
+                            lstm_window=args.lstm_window)
 
     return model
 
