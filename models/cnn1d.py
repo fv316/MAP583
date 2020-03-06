@@ -17,6 +17,11 @@ def get_mask(input_batch):
 
     return result
 
+def add_mask_to_vector(x):
+    x = x.unsqueeze(0)
+    mask = get_mask(x)
+    return torch.stack([x, mask], axis=1).squeeze()
+
 
 class Cnn1d(nn.Module):
     def __init__(self, num_classes=5, masking=False):
@@ -41,10 +46,8 @@ class Cnn1d(nn.Module):
             self.softmax = nn.LogSoftmax(dim=1)
 
     def forward(self, x):
-        masking = self.conv1.in_channels == 2
-        if masking:
-            mask = get_mask(x)
-            x = torch.stack([x, mask], axis=1).squeeze()
+        # masking = self.conv1.in_channels == 2
+        # if we're masking we don't have to do anything, DataLoader takes care of that
 
         out = self.conv1(x)
         out = self.relu(out)
