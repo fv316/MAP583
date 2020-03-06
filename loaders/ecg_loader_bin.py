@@ -13,25 +13,21 @@ ZIP_NAME = 'ecg_zip.zip'
 
 idx2label = {
     0: 'Normal',
-    1: 'Artial Premature',
-    2: 'Premature ventricular contraction',
-    3: 'Fusion of ventricular and normal',
-    4: 'Unknown'
+    1: 'Abnormal'
 }
 
 
 # class names and short hand class names
-classnames = ['Normal', 'Artial Premature', 'Premature ventricular contraction',
-              'Fusion of ventricular and normal', 'Unknown']
-sh_classnames = ['Normal', 'PAC', 'PVC', 'Fusion', 'Unknown']
-class_importance = np.array([1, 2, 2, 2, 0.5])
+classnames = ['Normal', 'Abnormal']
+sh_classnames = ['Normal', 'Abnormal']
+class_importance = np.array([1, 2])
 data_sets = ['mitbih_train.csv', 'mitbih_test.csv']
 
 
-class ECGLoader(torch.utils.data.Dataset):
+class ECGLoader_bin(torch.utils.data.Dataset):
 
     def __init__(self, data_dir, split, custom_transforms=None, list_dir=None,
-                 crop_size=None, num_classes=5, phase=None):
+                 crop_size=None, num_classes=2, phase=None):
 
         self.data_dir = data_dir
         self.split = split
@@ -50,7 +46,7 @@ class ECGLoader(torch.utils.data.Dataset):
     def __getitem__(self, index: int):
         ecg = self.data.iloc[index, :-
                              1].values.astype(np.float32).reshape((1, 187))
-        label = self.data.iloc[index, -1]
+        label = np.where(self.data.iloc[index, -1] > 0, 1, 0)
         if self.transform is not None:
             ecg = self.transform(ecg)
             label = self.transform(label)
@@ -76,9 +72,10 @@ class ECGLoader(torch.utils.data.Dataset):
             self._build_dir(path, True, True, True)
 
         self.data = pd.read_csv(path, header=None)
-        self.labels = self.data[187].astype(int)  # pandas time series type
+        self.labels = pd.Series(np.where(self.data[187] > 0, 1, 0))  # pandas time series type
         repartition = self.labels.value_counts()
-        self.class_weights = np.array([1./repartition[i] for i in range(self.num_classes)])
+        self.class_weights = np.array(
+            [1./repartition[i] for i in range(self.num_classes)])
 
     def _build_dir(self, path, unzip, showsize, del_zip):
         parent_path = pathlib.Path(self.data_dir).parent
@@ -109,7 +106,7 @@ class ECGLoader(torch.utils.data.Dataset):
 
     def get_label_importance(self, scheme):
         if scheme == 'equal':
-            l_importance = np.array([1, 1, 1, 1, 1])
+            l_importance = np.array([1, 1])
         elif scheme == 'importance':
             l_importance = self.class_importance
         else:

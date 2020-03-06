@@ -2,6 +2,8 @@
 '''
 Plotter class for plotting various things
 '''
+from sklearn.metrics import roc_curve, auc
+import io
 import numpy as np
 import matplotlib.pyplot as plt
 import os
@@ -55,7 +57,7 @@ def save_as_best(is_best, out_fn, extension='png'):
             f'.{extension}', f'_best.{extension}'))
 
 
-def plot_confusion_matrix(cm, out_fn, classnames=None, normalize=False, cmap=plt.cm.Blues):
+def plot_confusion_matrix(cm, out_fn, classnames=None, normalize=False, cmap=plt.cm.Blues, tb_writer=None):
     """
     This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
@@ -73,7 +75,7 @@ def plot_confusion_matrix(cm, out_fn, classnames=None, normalize=False, cmap=plt
         title = 'Confusion matrix, without normalization'
         print(title)
 
-    fig, ax = plt.subplots()
+    figure = plt.figure()
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title, fontsize=20)
     plt.ylabel('True label', fontsize=10)
@@ -91,7 +93,49 @@ def plot_confusion_matrix(cm, out_fn, classnames=None, normalize=False, cmap=plt
                  horizontalalignment="center",
                  color="white" if cm[i, j] > thresh else "black")
 
+    #if tb_writer:
+    #    tb_writer.add_image(title, plot_to_image(figure))
+
     print(f'saving plot to {out_fn}')
     plt.savefig(out_fn, bbox_inches='tight', dpi=300)
     plt.gcf().clear()
     plt.close()
+
+
+def plot_roc_curve(ground, scores, out_fn, tb_writer=None):
+    """
+    This function prints and plots the roc curve.
+    """
+    fpr, tpr, _ = roc_curve(ground, scores, pos_label=0)
+    roc_auc = auc(fpr, tpr)
+
+    figure = plt.figure()
+    lw = 2
+    plt.plot(fpr, tpr, color='darkorange', lw=lw,
+             label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate', fontsize=10)
+    plt.ylabel('True Positive Rate', fontsize=10)
+    plt.title('Receiver operating characteristic curve', fontsize=20)
+    plt.legend(loc="lower right")
+
+    #if tb_writer:
+    #    tb_writer.add_image("ROC curve", plot_to_image(figure))
+
+    print(f'saving plot to {out_fn}')
+    plt.savefig(out_fn, bbox_inches='tight', dpi=300)
+    plt.gcf().clear()
+    plt.close()
+
+
+def plot_to_image(figure):
+    """
+    Converts the matplotlib plot specified by 'figure' to a PNG image and
+    returns it. The supplied figure is closed and inaccessible after this call.
+    """
+    canvas = mpl.backends.backend_agg.FigureCanvas(figure)
+    canvas.draw()       # draw the canvas, cache the renderer
+    image = np.fromstring(canvas.tostring_rgb(), dtype='uint8')
+    return image

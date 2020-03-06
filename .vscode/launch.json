@@ -20,20 +20,23 @@
                 "RedirectOutput"
             ],
             "args": [
-                "--dataset", "ecg",
-                "--epochs", "1",
-                "--num-classes", "5",
+                "--dataset", "ecg_bin",
+                "--epochs", "2",
+                "--num-classes", "2",
                 "--root-dir", "ecg_data",
-                "--model-name", "resnet1d_v2_10",
+                "--model-name", "cnn1d_3",
                 "--batch-size", "128", 
                 "--lr", "0.001", 
                 "--scheduler", "ReduceLROnPlateau", 
                 "--optimizer", "adam", 
                 "--tensorboard",
-                "--version", "1",
-                "--verbose",
+                //"--version", "bump",
+                "--version", "latest",
+                //"--verbose",
                 "--test",
-                "--resume", "best"
+                "--resume", "best",
+                //"--short-run",
+                "--sampler", "equal",
             ]
         },
         {
