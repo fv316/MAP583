@@ -45,10 +45,7 @@ class ECGLoaderBase(torch.utils.data.Dataset):
         label = self.labels[index]
         if self.transform is not None:
             ecg = self.transform(ecg)
-            label = self.transform(label)
-        else:
-            ecg = torch.tensor(ecg).float()
-            label = torch.tensor(label).long()
+            
         return tuple([ecg, label, index])
 
     def __len__(self):

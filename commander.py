@@ -14,6 +14,7 @@ from models import get_model
 from toolbox import utils, logger, metrics, losses, optimizers
 import trainer
 from args import parse_args
+from models.cnn1d import add_mask_to_vector
 
 from torch.utils.tensorboard import SummaryWriter
 
@@ -100,7 +101,13 @@ def main():
 
     # init data loaders
     loader = get_loader(args)
-    train_data = loader(data_dir=args.data_dir, split='train', phase='train')
+    loader_args = {}
+    if args.masking:
+        # calculate masking in the data loader phase
+        loader_args['custom_transforms'] = add_mask_to_vector
+
+    train_data = loader(data_dir=args.data_dir, split='train',
+                        phase='train', **loader_args)
     sample_method, cb_weights, sample_weights = None, None, None
     if args.sampler:
         sample_weights = torch.tensor(
@@ -115,7 +122,7 @@ def main():
                                                shuffle=False if args.sampler else True, num_workers=args.workers, pin_memory=True,
                                                sampler=sample_method)
     val_loader = torch.utils.data.DataLoader(loader(data_dir=args.data_dir, split='val',
-                                                    phase='test'), batch_size=args.batch_size,
+                                                    phase='test', **loader_args), batch_size=args.batch_size,
                                              shuffle=False, num_workers=args.workers, pin_memory=True)
 
     exp_logger, lr = None, None
