@@ -17,6 +17,6 @@ class MaskingCNNTest(unittest.TestCase):
         self.assertEquals(result.shape, input_data.shape)
 
         result = result.squeeze()
-        self.assertEquals(result[0, :].tolist(), [1, 1, 1, 0, 0])
-        self.assertEquals(result[1, :].tolist(), [1, 1, 1, 0, 0])
-        self.assertEquals(result[2, :].tolist(), [1, 1, 1, 1, 0])
+        self.assertEqual(result[0, :].tolist(), [1, 1, 1, 0, 0])
+        self.assertEqual(result[1, :].tolist(), [1, 1, 1, 0, 0])
+        self.assertEqual(result[2, :].tolist(), [1, 1, 1, 1, 0])

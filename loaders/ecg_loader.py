@@ -40,9 +40,11 @@ class ECGLoaderBase(torch.utils.data.Dataset):
         self.read_lists()
 
     def __getitem__(self, index: int):
-        ecg = self.data.iloc[index, :-
-                             1].values.astype(np.float32).reshape((1, 187))
+        ecg = self.data.iloc[index, :-1].values.astype(np.float32).reshape((1, 187))
         label = self.labels[index]
+
+        ecg = torch.tensor(ecg).float()
+        label = torch.tensor(label).long()
         if self.transform is not None:
             ecg = self.transform(ecg)
             

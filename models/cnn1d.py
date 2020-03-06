@@ -2,25 +2,25 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch
 
+import numpy as np
+
+def get_vector_mask(vector):
+    mask_length = np.trim_zeros(vector.numpy(), 'b').shape[0]
+    return torch.cat([torch.ones(mask_length), torch.zeros(vector.shape[0] - mask_length)])
+    
+
 def get_mask(input_batch):
     result = torch.ones(input_batch.shape)
 
     for i in range(input_batch.shape[0]):
-        # we iterate from the end as long as we see zeros
-        for j in range(input_batch.shape[2] - 1, 0, -1):
-            if input_batch[i, 0, j] != 0:
-                # we finally encountered real data
-                break
-        
-            # otherwise we continue calculating mask
-            result[i, 0, j] = 0
+        result[i, 0, :] = get_vector_mask(input_batch[i, 0, :])
 
     return result
 
 def add_mask_to_vector(x):
-    x = x.unsqueeze(0)
-    mask = get_mask(x)
-    return torch.stack([x, mask], axis=1).squeeze()
+    x = x.squeeze()
+    mask = get_vector_mask(x)
+    return torch.stack([x.unsqueeze(0), mask.unsqueeze(0)], axis=0).squeeze()
 
 
 class Cnn1d(nn.Module):
@@ -29,9 +29,9 @@ class Cnn1d(nn.Module):
 
         self.masking = masking
         if masking:
-            self.conv1 = nn.Conv1d(in_channels=1, out_channels=8, kernel_size=7, stride=1)
-        else:
             self.conv1 = nn.Conv1d(in_channels=2, out_channels=8, kernel_size=7, stride=1)
+        else:
+            self.conv1 = nn.Conv1d(in_channels=1, out_channels=8, kernel_size=7, stride=1)
         self.bn1 = nn.BatchNorm1d(8)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool1d(kernel_size=3, stride=3)
