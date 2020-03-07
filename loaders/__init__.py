@@ -1,4 +1,4 @@
-from loaders.ecg_loader import ECGLoader
+from loaders.ecg_loader import ECGLoader, ECGLoader_bin
 
 
 def get_loader(args):
@@ -8,4 +8,5 @@ def get_loader(args):
     """
     return {
         'ecg': ECGLoader,
+        'ecg_bin': ECGLoader_bin,
     }[args.dataset]

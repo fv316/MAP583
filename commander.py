@@ -84,9 +84,10 @@ def main():
     best_score, best_epoch = -1, -1
     if len(sys.argv) > 1:
         args = parse_args()
-        print('----- Experiments parameters -----')
-        for k, v in args.__dict__.items():
-            print(k, ':', v)
+        if args.verbose:
+            print('----- Experiments parameters -----')
+            for k, v in args.__dict__.items():
+                print(k, ':', v)
     else:
         print('Please provide some parameters for the current experiment. Check-out arg.py for more info!')
         sys.exit()
@@ -107,6 +108,7 @@ def main():
 
     train_data = loader(data_dir=args.data_dir, split='train',
                         phase='train', num_classes=args.num_classes, **loader_args)
+
     sample_method, cb_weights, sample_weights = None, None, None
     if args.sampler:
         sample_weights = torch.tensor(
@@ -121,12 +123,13 @@ def main():
                                                shuffle=False if args.sampler else True, num_workers=args.workers, pin_memory=True,
                                                sampler=sample_method)
     val_loader = torch.utils.data.DataLoader(loader(data_dir=args.data_dir, split='val',
-                                                    phase='test', num_classes=args.num_classes, **loader_args), batch_size=args.batch_size,
+                                                    phase='test', **loader_args), batch_size=args.batch_size,
                                              shuffle=False, num_workers=args.workers, pin_memory=True)
 
     exp_logger, lr = None, None
 
     model = get_model(args)
+    tb_writer.add_graph(model, next(iter(train_loader))[0])
     criterion = losses.get_criterion(args, cb_weights)
 
     # optionally resume from a checkpoint
@@ -153,7 +156,7 @@ def main():
                                                          phase='test', num_classes=args.num_classes), batch_size=args.batch_size,
                                                   shuffle=False, num_workers=args.workers, pin_memory=True)
         trainer.test(args, test_loader, model, criterion, args.start_epoch,
-                     eval_score=metrics.accuracy_classif, output_dir=args.out_pred_dir, has_gt=True)
+                     eval_score=metrics.accuracy_classif, output_dir=args.out_pred_dir, has_gt=True, tb_writer=tb_writer)
         sys.exit()
 
     is_best = True
@@ -194,6 +197,13 @@ def main():
             'exp_logger': exp_logger,
             'res_list': res_list,
         }, is_best)
+
+        for name, param in model.named_parameters():
+            tb_writer.add_histogram(name, param, epoch)
+            try:
+                tb_writer.add_histogram(f'{name}.grad', param.grad, epoch)
+            except:
+                print(f'{name}.grad not plottable on Tensorboard')
 
     if args.tensorboard:
         tb_writer.close()

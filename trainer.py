@@ -199,13 +199,14 @@ def validate(args, val_loader, model, criterion, logger, epoch, eval_score=None,
 
 
 def test(args, eval_data_loader, model, criterion, epoch, eval_score=None,
-         output_dir='pred', has_gt=True, print_freq=10):
+         output_dir='pred', has_gt=True, tb_writer=None, print_freq=10):
 
     model.eval()
     meters = metrics.make_meters(args.num_classes)
     end = time.time()
     hist = np.zeros((args.num_classes, args.num_classes))
     res_list = {}
+    scores = {}
     with torch.no_grad():
         for i, (input, target_class, name) in enumerate(eval_data_loader):
             # print(input.size())
@@ -234,6 +235,7 @@ def test(args, eval_data_loader, model, criterion, epoch, eval_score=None,
                 for idx, curr_name in enumerate(name):
                     res_list[curr_name.item()] = [pred[idx].item(),
                                                   target_class[idx].item()]
+                    scores[curr_name.item()] = np.exp(output[idx][0].item())
 
                 pred = pred.to('cpu').data.numpy()
                 hist += metrics.fast_hist(pred.flatten(),
@@ -275,7 +277,14 @@ def test(args, eval_data_loader, model, criterion, epoch, eval_score=None,
 
     # TODO: add class names
     cm = np.array(meters["confusion_matrix"].value())
-    plotter.plot_confusion_matrix(cm, [str(i) for i in range(len(cm))], os.path.join(
-        output_dir, 'test_norm_cm_ep{}.png'.format(epoch)), normalize=True, title='Normalized Confusion Matrix')
-    plotter.plot_confusion_matrix(cm, [str(i) for i in range(len(cm))], os.path.join(
-        output_dir, 'test_cm_ep{}.png'.format(epoch)), normalize=False, title='Confusion Matrix')
+    plotter.plot_confusion_matrix(cm, os.path.join(
+        output_dir, 'norm_cm_ep{}.png'.format(epoch)), normalize=True, tb_writer=tb_writer)
+    plotter.plot_confusion_matrix(cm, os.path.join(
+        output_dir, 'cm_ep{}.png'.format(epoch)))
+
+    if args.num_classes == 2:
+        prob_scores = [i for i in scores.values()]
+        ground_truth = [i[1] for i in res_list.values()]
+        plotter.plot_roc_curve(ground_truth, prob_scores, os.path.join(
+            output_dir, 'roc_ep{}.png'.format(epoch)), tb_writer=tb_writer)
+        tb_writer.add_pr_curve('pr_curve', np.array(ground_truth), np.array(prob_scores))
