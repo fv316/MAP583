@@ -39,7 +39,7 @@ class ECGLoaderBase(torch.utils.data.Dataset):
 
         self.read_lists()
 
-    def __getitem__(self, index: int)
+    def __getitem__(self, index: int):
         ecg = self.data.iloc[index, :-
                              1].values.astype(np.float32).reshape((1, 187))
         label = self.labels[index]
