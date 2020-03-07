@@ -94,6 +94,7 @@ sklearn==0.0
 soupsieve==2.0
 tabulate==0.8.6
 tensorboard==2.1.0
+tensorboardX==2.0
 terminado==0.8.3
 testpath==0.4.4
 torch==1.4.0

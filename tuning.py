@@ -9,6 +9,7 @@ from models import models_to_arch
 
 def create_args(config):
     args = [
+        "--short-run",
         "--root-dir", "/home/svp/Programming/MAP583/ecg_data",
         "--tensorboard", "--version", "bump"]
 
