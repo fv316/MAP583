@@ -1,3 +1,5 @@
+"""Parse arguments passed to the commander.py"""
+
 import sys
 import argparse
 import os
@@ -5,7 +7,12 @@ import torch
 
 
 def list_directories(path):
+    print(os.getcwd())
     return [directory for directory in os.listdir(path) if os.path.isdir(os.path.join(path, directory))]
+
+
+def extract_name(args):
+    return 'ecg_{}_{}.{}'.format(args.model_name, args.lr, args.version)
 
 
 # Gets model version as latest, bump or version specified as integer
@@ -55,7 +62,7 @@ def extract_name(args):
     return _extract_prefix(args) + '{}'.format(args.version)
 
 
-def parse_args():
+def parse_args(args):
     parser = argparse.ArgumentParser(description='')
 
     #  experiment settings
@@ -125,12 +132,14 @@ def parse_args():
     parser.add_argument('--tensorboard', dest='tensorboard', action='store_true', default=False,
                         help='Use tensorboard to track and plot')
 
-    args = parser.parse_args()
+    args = parser.parse_args(args)
 
     # update args
+    args.data_dir = '{}/{}'.format(args.root_dir, args.dataset)
+
     args.version = get_version(args)
     args.name = extract_name(args)
-    args.data_dir = '{}/{}'.format(args.root_dir, args.dataset)
+
     args.log_dir = '{}/runs/{}/'.format(args.data_dir, args.name)
     args.res_dir = '%s/runs/%s/res' % (args.data_dir, args.name)
     args.out_pred_dir = '%s/runs/%s/pred' % (args.data_dir, args.name)

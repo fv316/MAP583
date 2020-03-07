@@ -80,17 +80,8 @@ def load_checkpoint(args, model):
         return None
 
 
-def main():
+def run_from_args(args):
     best_score, best_epoch = -1, -1
-    if len(sys.argv) > 1:
-        args = parse_args()
-        if args.verbose:
-            print('----- Experiments parameters -----')
-            for k, v in args.__dict__.items():
-                print(k, ':', v)
-    else:
-        print('Please provide some parameters for the current experiment. Check-out arg.py for more info!')
-        sys.exit()
 
     # init random seeds
     utils.setup_env(args)
@@ -209,6 +200,19 @@ def main():
 
     print("Scripts have run successfully")
 
+    return {
+        "mAP": best_score
+    }
+
 
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) > 1:
+        args = parse_args()
+        print('----- Experiments parameters -----')
+        for k, v in args.__dict__.items():
+            print(k, ':', v)
+    else:
+        print('Please provide some parameters for the current experiment. Check-out arg.py for more info!')
+        sys.exit()
+
+    run_from_args(args)
