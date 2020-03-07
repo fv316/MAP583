@@ -11,29 +11,21 @@ GOOGLE_FILE_ID = '17Rd4YpGwssSpk4xZAT5AyYskjvs95dAY'
 ZIP_NAME = 'ecg_zip.zip'
 
 
-idx2label = {
-    0: 'Normal',
-    1: 'Artial Premature',
-    2: 'Premature ventricular contraction',
-    3: 'Fusion of ventricular and normal',
-    4: 'Unknown'
-}
-
-
-# class names and short hand class names
-classnames = ['Normal', 'Artial Premature', 'Premature ventricular contraction',
-              'Fusion of ventricular and normal', 'Unknown']
-sh_classnames = ['Normal', 'PAC', 'PVC', 'Fusion', 'Unknown']
-class_importance = np.array([1, 2, 2, 2, 0.5])
 data_sets = ['mitbih_train.csv', 'mitbih_test.csv']
 
 
-class ECGLoader(torch.utils.data.Dataset):
-
-    def __init__(self, data_dir, split, custom_transforms=None, list_dir=None,
-                 crop_size=None, num_classes=5, phase=None):
+class ECGLoaderBase(torch.utils.data.Dataset):
+    def __init__(self, data_dir, split, idx2label, classnames,
+                 sh_classnames, class_importance, num_classes,
+                 custom_transforms=None,
+                 phase=None):
 
         self.data_dir = data_dir
+
+        data_dir_parent = pathlib.Path(self.data_dir).parent
+        data_dir_name = 'ecg'
+        self.data_dir = os.path.join(data_dir_parent, data_dir_name)
+
         self.split = split
         self.phase = split if phase is None else phase
         self.idx2label = idx2label
@@ -50,7 +42,7 @@ class ECGLoader(torch.utils.data.Dataset):
     def __getitem__(self, index: int):
         ecg = self.data.iloc[index, :-
                              1].values.astype(np.float32).reshape((1, 187))
-        label = self.data.iloc[index, -1]
+        label = self.labels[index]
         if self.transform is not None:
             ecg = self.transform(ecg)
             label = self.transform(label)
@@ -61,6 +53,9 @@ class ECGLoader(torch.utils.data.Dataset):
 
     def __len__(self):
         return len(self.data)
+
+    def extract_labels(self, data):
+        pass
 
     def read_lists(self):
         if self.split == 'train':
@@ -76,9 +71,10 @@ class ECGLoader(torch.utils.data.Dataset):
             self._build_dir(path, True, True, True)
 
         self.data = pd.read_csv(path, header=None)
-        self.labels = self.data[187].astype(int)  # pandas time series type
+        self.labels = self.extract_labels(self.data)
         repartition = self.labels.value_counts()
-        self.class_weights = np.array([1./repartition[i] for i in range(self.num_classes)])
+        self.class_weights = np.array(
+            [1./repartition[i] for i in range(self.num_classes)])
 
     def _build_dir(self, path, unzip, showsize, del_zip):
         parent_path = pathlib.Path(self.data_dir).parent
@@ -109,10 +105,54 @@ class ECGLoader(torch.utils.data.Dataset):
 
     def get_label_importance(self, scheme):
         if scheme == 'equal':
-            l_importance = np.array([1, 1, 1, 1, 1])
+            l_importance = np.ones(self.class_importance.size)
         elif scheme == 'importance':
             l_importance = self.class_importance
         else:
             raise 'Sampling strategy {} not available'.format(scheme)
 
         return l_importance
+
+
+class ECGLoader(ECGLoaderBase):
+    def __init__(self, data_dir, split, **kwargs):
+        idx2label = {
+            0: 'Normal',
+            1: 'Artial Premature',
+            2: 'Premature ventricular contraction',
+            3: 'Fusion of ventricular and normal',
+            4: 'Unknown'
+        }
+
+        # class names and short hand class names
+        classnames = ['Normal', 'Artial Premature', 'Premature ventricular contraction',
+                      'Fusion of ventricular and normal', 'Unknown']
+        sh_classnames = ['Normal', 'PAC', 'PVC', 'Fusion', 'Unknown']
+        class_importance = np.array([1, 2, 2, 2, 0.5])
+
+        super(ECGLoader, self).__init__(data_dir, split, idx2label,
+                                        classnames, sh_classnames, class_importance,
+                                        num_classes=5, **kwargs)
+
+    def extract_labels(self, data):
+        return data[187].astype(int)
+
+
+class ECGLoader_bin(ECGLoaderBase):
+    def __init__(self, data_dir, split, **kwargs):
+        idx2label = {
+            0: 'Normal',
+            1: 'Abnormal'
+        }
+
+        # class names and short hand class names
+        classnames = ['Normal', 'Abnormal']
+        sh_classnames = ['Normal', 'Abnormal']
+        class_importance = np.array([1, 2])
+
+        super(ECGLoader_bin, self).__init__(data_dir, split, idx2label,
+                                        classnames, sh_classnames, class_importance,
+                                        num_classes=2, **kwargs)
+
+    def extract_labels(self, data):
+        return pd.Series(np.where(data[187] > 0, 1, 0))
