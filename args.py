@@ -80,6 +80,8 @@ def parse_args():
                         help='which checkpoint to resume from possible values ["latest", "best", epoch]')
     parser.add_argument('--pretrained', action='store_true',
                         default=False, help='use pre-trained model')
+    parser.add_argument('--masking', default=False, type=bool, const=True, nargs='?',
+                        help='Whether to use masking when training the models')
 
     # data settings
     parser.add_argument('--num-classes', default=5, type=int)
