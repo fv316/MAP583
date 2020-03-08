@@ -153,7 +153,7 @@ def main():
 
     if args.test:
         test_loader = torch.utils.data.DataLoader(loader(data_dir=args.data_dir, split='test',
-                                                         phase='test', num_classes=args.num_classes), batch_size=args.batch_size,
+                                                         phase='test'), batch_size=args.batch_size,
                                                   shuffle=False, num_workers=args.workers, pin_memory=True)
         trainer.test(args, test_loader, model, criterion, args.start_epoch,
                      eval_score=metrics.accuracy_classif, output_dir=args.out_pred_dir, has_gt=True, tb_writer=tb_writer)
