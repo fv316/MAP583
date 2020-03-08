@@ -28,19 +28,16 @@ def get_optimizer(args, model):
         raise 'Optimizer {} not available'.format(args.optimizer)
 
     if 'StepLR' == args.scheduler:
-        print(f' --- Setting lr scheduler to StepLR ---')
         scheduler = torch.optim.lr_scheduler.StepLR(
             optimizer, step_size=args.step, gamma=args.lr_decay)
     elif 'ExponentialLR' == args.scheduler:
-        print(f' --- Setting lr scheduler to ExponentialLR ---')
         scheduler = torch.optim.lr_scheduler.ExponentialLR(
             optimizer, gamma=args.lr_decay)
     elif 'ReduceLROnPlateau' == args.scheduler:
-        print(f' --- Setting lr scheduler to ReduceLROnPlateau ---')
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
             optimizer, 'min', factor=args.lr_decay, patience=args.step)
     else:
-        raise f'Scheduler {args.scheduler} not available'
+        raise 'Scheduler {args.scheduler} not available'
 
     return optimizer, scheduler
 

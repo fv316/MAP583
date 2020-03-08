@@ -88,7 +88,7 @@ def run_from_args(args):
 
     # init tensorboard summary is asked
     tb_writer = SummaryWriter(
-        f'{args.data_dir}/runs/{args.name}/tensorboard') if args.tensorboard else None
+        '{}/runs/{}/tensorboard'.format(args.data_dir, args.name)) if args.tensorboard else None
 
     # init data loaders
     loader = get_loader(args)
@@ -171,9 +171,6 @@ def run_from_args(args):
             else:
                 scheduler.step()
 
-            print(
-                f"Updating learning rate from {prev_lr} to {optimizer.param_groups[0]['lr']}")
-
         # remember best acc and save checkpoint
         is_best = mAP > best_score
         best_score = max(mAP, best_score)
@@ -192,9 +189,9 @@ def run_from_args(args):
         for name, param in model.named_parameters():
             tb_writer.add_histogram(name, param, epoch)
             try:
-                tb_writer.add_histogram(f'{name}.grad', param.grad, epoch)
+                tb_writer.add_histogram(name + '.grad', param.grad, epoch)
             except:
-                print(f'{name}.grad not plottable on Tensorboard')
+                print('{}.grad not plottable on Tensorboard'.format(name))
 
     if args.tensorboard:
         tb_writer.close()
@@ -206,7 +203,7 @@ def run_from_args(args):
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        args = parse_args()
+        args = parse_args(None)
         print('----- Experiments parameters -----')
         for k, v in args.__dict__.items():
             print(k, ':', v)

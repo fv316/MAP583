@@ -192,7 +192,6 @@ def save_meters(meters, fn, epoch=0):
     if epoch > 0:
         logged['epoch'] = epoch
 
-    print(f'Saving meters to {fn}')
     with open(fn, 'w') as f:
         json.dump(logged, f)
 

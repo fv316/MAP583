@@ -54,7 +54,7 @@ def save_plot(args, logger, tags=['train', 'val'], name='loss', title='loss curv
 def save_as_best(is_best, out_fn, extension='png'):
     if is_best:
         shutil.copyfile(out_fn, out_fn.replace(
-            f'.{extension}', f'_best.{extension}'))
+            '.' + 'extension', '_best.' + 'extension'))
 
 
 def plot_confusion_matrix(cm, out_fn, classnames=None, normalize=False, cmap=plt.cm.Blues, tb_writer=None):
@@ -96,7 +96,7 @@ def plot_confusion_matrix(cm, out_fn, classnames=None, normalize=False, cmap=plt
     #if tb_writer:
     #    tb_writer.add_image(title, plot_to_image(figure))
 
-    print(f'saving plot to {out_fn}')
+    print('saving plot to {out_fn}')
     plt.savefig(out_fn, bbox_inches='tight', dpi=300)
     plt.gcf().clear()
     plt.close()
@@ -124,7 +124,7 @@ def plot_roc_curve(ground, scores, out_fn, tb_writer=None):
     #if tb_writer:
     #    tb_writer.add_image("ROC curve", plot_to_image(figure))
 
-    print(f'saving plot to {out_fn}')
+    print('saving plot to {out_fn}')
     plt.savefig(out_fn, bbox_inches='tight', dpi=300)
     plt.gcf().clear()
     plt.close()

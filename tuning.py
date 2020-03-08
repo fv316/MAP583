@@ -9,7 +9,7 @@ import random
 
 def create_args(config):
     args = [
-        "--root-dir", "/home/svp/Programming/MAP583/ecg_data",
+        "--root-dir", "/home/szymonpajzert/MAP583/ecg_data",
         "--tensorboard", "--version", "bump"]
 
     for arg_name, arg_value in config.items():
@@ -40,8 +40,6 @@ if __name__ == "__main__":
             "conv1-size": tune.grid_search([5, 8, 10, 20]),
             "conv2-size": tune.grid_search([10, 20, 32, 40]),
             "conv-kernel-size": tune.grid_search([5, 7, 10]),
-            # None is important here so that argument is not passed at all
-            "masking": tune.grid_search([None, True])
         },
         "lstm": {
             'input-dim': tune.grid_search([10, 50, 100, 187]),
@@ -61,8 +59,8 @@ if __name__ == "__main__":
             "lr": tune.grid_search([
                 # 1e-08,
                 # 1e-05,
-                # 1e-03,
-                # 1e-02,
+                1e-03,
+                1e-02,
                 1e-01,
             ]),
             'optimizer': tune.grid_search([

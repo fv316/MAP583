@@ -22,7 +22,7 @@ class ECGLoaderBase(torch.utils.data.Dataset):
 
         self.data_dir = data_dir
 
-        data_dir_parent = pathlib.Path(self.data_dir).parent
+        data_dir_parent = os.path.dirname(self.data_dir)
         data_dir_name = 'ecg'
         self.data_dir = os.path.join(data_dir_parent, data_dir_name)
 
@@ -76,7 +76,7 @@ class ECGLoaderBase(torch.utils.data.Dataset):
             [1./repartition[i] for i in range(self.num_classes)])
 
     def _build_dir(self, path, unzip, showsize, del_zip):
-        parent_path = pathlib.Path(self.data_dir).parent
+        parent_path = os.path.dirname(self.data_dir)
         name = os.path.basename(self.data_dir)  # always ecg
 
         GoogleDriveDownloader.download_file_from_google_drive(
