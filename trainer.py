@@ -6,17 +6,6 @@ import torch
 from toolbox import utils, metrics, plotter
 
 
-'''
-    .                       o8o
-  .o8                       `"'
-.o888oo oooo d8b  .oooo.   oooo  ooo. .oo.
-  888   `888""8P `P  )88b  `888  `888P"Y88b
-  888    888      .oP"888   888   888   888
-  888 .  888     d8(  888   888   888   888
-  "888" d888b    `Y888""8o o888o o888o o888o
-'''
-
-
 def train(args, train_loader, model, criterion, optimizer, logger, epoch,
           eval_score=None, print_freq=10, tb_writer=None):
 
@@ -81,17 +70,6 @@ def train(args, train_loader, model, criterion, optimizer, logger, epoch,
 
     logger.log_meters('train', n=epoch)
     logger.log_meters('hyperparams', n=epoch)
-
-
-'''
-                      oooo
-                      `888
-oooo    ooo  .oooo.    888
- `88.  .8'  `P  )88b   888
-  `88..8'    .oP"888   888
-   `888'    d8(  888   888
-    `8'     `Y888""8o o888o
-'''
 
 
 def validate(args, val_loader, model, criterion, logger, epoch, eval_score=None, print_freq=10, tb_writer=None):
@@ -187,17 +165,6 @@ def validate(args, val_loader, model, criterion, logger, epoch, eval_score=None,
     return meters, meters['loss'].avg, res_list
 
 
-'''
-    .                          .
-  .o8                        .o8
-888oo  .ooooo.   .oooo.o .o888oo
-  888   d88' `88b d88(  "8   888
-  888   888ooo888 `"Y88b.    888
-  888 . 888    .o o.  )88b   888 .
-  "888" `Y8bod8P' 8""888P'   "888"
-'''
-
-
 def test(args, eval_data_loader, model, criterion, epoch, eval_score=None,
          output_dir='pred', has_gt=True, tb_writer=None, print_freq=10):
 
@@ -287,4 +254,5 @@ def test(args, eval_data_loader, model, criterion, epoch, eval_score=None,
         ground_truth = [i[1] for i in res_list.values()]
         plotter.plot_roc_curve(ground_truth, prob_scores, os.path.join(
             output_dir, 'roc_ep{}.png'.format(epoch)), tb_writer=tb_writer)
-        tb_writer.add_pr_curve('pr_curve', np.array(ground_truth), np.array(prob_scores))
+        tb_writer.add_pr_curve('pr_curve', np.array(
+            ground_truth), np.array(prob_scores))

@@ -116,6 +116,6 @@ def resnet1d_v2(model_name, num_classes, **kwargs):
     lstm_args = extract_args(kwargs, ["kernel_size", "adaptive_size"])
 
     return {
-        'resnet1d_v2_18': resnet1d_v2_18(num_classes=num_classes, ),
-        'resnet1d_v2_10': resnet1d_v2_10(num_classes=num_classes, ),
+        'resnet1d_v2_18': resnet1d_v2_18(num_classes=num_classes, **lstm_args),
+        'resnet1d_v2_10': resnet1d_v2_10(num_classes=num_classes, **lstm_args),
     }[model_name]
