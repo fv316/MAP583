@@ -26,9 +26,7 @@ def get_generator(arch):
 
 models_to_arch = {
     'cnn1d_3': 'cnn1d',
-    'lstm_1': 'lstm',
-    'lstm_2': 'lstm',
-    'lstm_3': 'lstm',
+    'lstm': 'lstm',
     'resnet1d_v2_18': 'resnet1d_v2',
     'resnet1d_v2_10': 'resnet1d_v2',
     'resnet1d_18': 'resnet1d',

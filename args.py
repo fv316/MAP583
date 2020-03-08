@@ -11,10 +11,6 @@ def list_directories(path):
     return [directory for directory in os.listdir(path) if os.path.isdir(os.path.join(path, directory))]
 
 
-def extract_name(args):
-    return 'ecg_{}_{}.{}'.format(args.model_name, args.lr, args.version)
-
-
 # Gets model version as latest, bump or version specified as integer
 def get_version(args):
     if args.version is None:
@@ -23,7 +19,7 @@ def get_version(args):
 
     name_prefix = _extract_prefix(args)
 
-    existing_models = list_directories('ecg_data/ecg/runs')
+    existing_models = list_directories(os.path.join(args.data_dir, 'runs'))
     models_with_name = [
         model for model in existing_models if model.startswith(name_prefix)]
     if len(models_with_name) == 0:
@@ -55,11 +51,32 @@ def _extract_prefix(args):
         prefix += 'cb{}_'.format(args.class_balance)
     elif args.sampler:
         prefix += 'samp{}_'.format(args.sampler)
+    
+    if args.conv1_size:
+        prefix += '{}_'.format(args.conv1_size)
+    if args.conv2_size:
+        prefix += '{}_'.format(args.conv2_size)
+    if args.conv_kernel_size:
+        prefix += '{}_'.format(args.conv_kernel_size)
+    if args.masking:
+        prefix += 'mask_'
+    if args.input_dim:
+        prefix += '{}_'.format(args.input_dim)
+    if args.hidden_dim:
+        prefix += '{}_'.format(args.hidden_dim)
+    if args.layer_dim:
+        prefix += '{}_'.format(args.layer_dim)
+    if args.kernel_size:
+        prefix += '{}_'.format(args.kernel_size)
+    if args.adaptive_size:
+        prefix += '{}_'.format(args.adaptive_size)
+
     return prefix
 
 
 def extract_name(args):
-    return _extract_prefix(args) + '{}'.format(args.version)
+    return _extract_prefix(args) + str(format(args.version))
+
 
 
 def parse_args(args):
@@ -87,8 +104,22 @@ def parse_args(args):
                         help='which checkpoint to resume from possible values ["latest", "best", epoch]')
     parser.add_argument('--pretrained', action='store_true',
                         default=False, help='use pre-trained model')
+
+    # cnn1 specific settings
+    parser.add_argument('--conv1-size', type=int, default=None)
+    parser.add_argument('--conv2-size', type=int, default=None)
+    parser.add_argument('--conv-kernel-size', type=int, default=None)
     parser.add_argument('--masking', default=False, type=bool, const=True, nargs='?',
                         help='Whether to use masking when training the models')
+
+    # lstm specific settings
+    parser.add_argument('--input-dim', type=int, default=None)
+    parser.add_argument('--hidden-dim', type=int, default=None)
+    parser.add_argument('--layer-dim', type=int, default=None)
+
+    # renset specific settings
+    parser.add_argument('--kernel-size', type=int, default=None)
+    parser.add_argument('--adaptive-size', type=int, default=None)
 
     # data settings
     parser.add_argument('--num-classes', default=5, type=int)

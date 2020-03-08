@@ -157,8 +157,9 @@ def run_from_args(args):
                       eval_score=metrics.accuracy_classif, tb_writer=tb_writer)
 
         # evaluate on validation set
-        mAP, val_loss, res_list = trainer.validate(
+        meters, val_loss, res_list = trainer.validate(
             args, val_loader, model, criterion, exp_logger, epoch, eval_score=metrics.accuracy_classif, tb_writer=tb_writer)
+        mAP = meters['mAP'].val
 
         # update learning rate
         if scheduler is None:
@@ -200,9 +201,7 @@ def run_from_args(args):
 
     print("Scripts have run successfully")
 
-    return {
-        "mAP": best_score
-    }
+    return meters
 
 
 if __name__ == '__main__':

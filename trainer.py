@@ -184,7 +184,7 @@ def validate(args, val_loader, model, criterion, logger, epoch, eval_score=None,
         tb_writer.add_scalar('meanIoU/val', meters['meanIoU'].val, epoch)
         tb_writer.add_scalar('fwavacc/val', meters['fwavacc'].val, epoch)
 
-    return meters['mAP'].val, meters['loss'].avg, res_list
+    return meters, meters['loss'].avg, res_list
 
 
 '''

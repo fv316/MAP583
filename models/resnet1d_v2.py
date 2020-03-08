@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
+from models.util import extract_args
 
 class BasicBlock(nn.Module):
     expansion = 1
@@ -36,12 +37,18 @@ class BasicBlock(nn.Module):
 
 
 class ResNet1d_v2(nn.Module):
-    def __init__(self, block, layers, num_classes=5, input_channels=1):
+    def __init__(self, block, layers, num_classes=5, kernel_size=5, adaptive_size=1):
+        input_channels=1
+
         self.inplanes = 32
         super(ResNet1d_v2, self).__init__()
+        # TODO: stride here and kernel and padding above
+        # TODO: n below
+
+        padding = (kernel_size - 1) // 2
 
         self.conv1 = nn.Conv1d(
-            input_channels, 32, kernel_size=5, stride=1, padding=2, bias=False)
+            input_channels, 32, kernel_size=kernel_size, stride=1, padding=padding, bias=False)
         self.bn1 = nn.BatchNorm1d(32)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool1d(kernel_size=3, stride=2, padding=1)
@@ -49,8 +56,8 @@ class ResNet1d_v2(nn.Module):
         self.layer2 = self._make_layer(block, 64, layers[1], stride=2)
         self.layer3 = self._make_layer(block, 128, layers[2], stride=2)
         self.layer4 = self._make_layer(block, 254, layers[3], stride=2)
-        self.avgpool = nn.AdaptiveAvgPool1d(output_size=(1))
-        self.fc = nn.Linear(254 * block.expansion, num_classes)
+        self.avgpool = nn.AdaptiveAvgPool1d(output_size=(adaptive_size))
+        self.fc = nn.Linear(254 * adaptive_size * block.expansion, num_classes)
 
         if 1 == num_classes:
             # compatible with nn.BCELoss
@@ -106,7 +113,9 @@ def resnet1d_v2_18(pretrained=False, **kwargs):
 
 
 def resnet1d_v2(model_name, num_classes, **kwargs):
-    return{
-        'resnet1d_v2_18': resnet1d_v2_18(num_classes=num_classes, input_channels=1),
-        'resnet1d_v2_10': resnet1d_v2_10(num_classes=num_classes, input_channels=1),
+    lstm_args = extract_args(kwargs, ["kernel_size", "adaptive_size"])
+
+    return {
+        'resnet1d_v2_18': resnet1d_v2_18(num_classes=num_classes, ),
+        'resnet1d_v2_10': resnet1d_v2_10(num_classes=num_classes, ),
     }[model_name]

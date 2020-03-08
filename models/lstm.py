@@ -2,6 +2,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch
 
+from models.util import extract_args
 
 class LSTMModel(nn.Module):
     def __init__(self, num_classes, input_dim=187, hidden_dim=100, layer_dim=1):
@@ -43,8 +44,8 @@ def lstm_x(**kwargs):
 
 
 def lstm(model_name, num_classes, **kwargs):
-    return{
-        'lstm_1': lstm_x(num_classes=num_classes, layer_dim=1),
-        'lstm_2': lstm_x(num_classes=num_classes, layer_dim=2),
-        'lstm_3': lstm_x(num_classes=num_classes, layer_dim=3),
+    lstm_args = extract_args(kwargs, ["input_dim", "hidden_dim", "layer_dim"])
+
+    return {
+        'lstm': lstm_x(num_classes=num_classes, **lstm_args),
     }[model_name]
