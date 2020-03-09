@@ -111,12 +111,10 @@ def main():
         cb_weights = torch.tensor(
             train_data.get_cb_weights(args.class_balance))
 
-    train_loader = torch.utils.data.DataLoader(train_data, batch_size=args.batch_size,
-                                               shuffle=False if args.sampler else True, num_workers=args.workers, pin_memory=True,
-                                               sampler=sample_method)
-    val_loader = torch.utils.data.DataLoader(loader(data_dir=args.data_dir, split='val',
-                                                    phase='test'), batch_size=args.batch_size,
-                                             shuffle=False, num_workers=args.workers, pin_memory=True)
+    train_loader = torch.utils.data.DataLoader(
+        train_data, batch_size=args.batch_size, shuffle=False if args.sampler else True, num_workers=args.workers, pin_memory=True, sampler=sample_method)
+    val_loader = torch.utils.data.DataLoader(loader(data_dir=args.data_dir, split='val', phase='test'),
+                                             batch_size=args.batch_size, shuffle=False, num_workers=args.workers, pin_memory=True)
 
     exp_logger, lr = None, None
 
@@ -144,8 +142,7 @@ def main():
     criterion.to(args.device)
 
     if args.test:
-        test_loader = torch.utils.data.DataLoader(loader(data_dir=args.data_dir, split='test',
-                                                         phase='test', num_classes=args.num_classes), batch_size=args.batch_size,
+        test_loader = torch.utils.data.DataLoader(loader(data_dir=args.data_dir, split='test',phase='test'), batch_size=args.batch_size,
                                                   shuffle=False, num_workers=args.workers, pin_memory=True)
         trainer.test(args, test_loader, model, criterion, args.start_epoch,
                      eval_score=metrics.accuracy_classif, output_dir=args.out_pred_dir, has_gt=True, tb_writer=tb_writer)

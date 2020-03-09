@@ -24,9 +24,7 @@ The project is structured as following:
 |   └── gdd.py # loading and unzipping data from google drive
 ├── models
 |   └── architecture selector
-|   └── lenet.py # classical CNN
-|   └── resnet.py # relatively recent CNN 
-|   └── squeezenet.py # highly compressed CNN
+|   └── lstm.py # baseline lstm model
 |   └── cnn1d.py # classical 1 dimensional CNN
 |   └── resnet1d.py # 1 dimensional CNN with residual skip connections
 |   └── resnet1d_v2.py # deeper version of resnet1d
@@ -36,6 +34,9 @@ The project is structured as following:
 |   └── metrics.py # code snippets for computing scores and main values to track
 |   └── plotter.py # snippets for plotting and saving plots to disk
 |   └── utils.py   # various utility functions
+├── notebooks
+|   └── graphs # plotly HTML graphs
+|   └── notebook1.ipynb # initial notebook with data visualisations
 ├── commander.py # main file from the project serving for calling all necessary functions for training and testing
 ├── args.py # parsing all command line arguments for experiments
 ├── trainer.py # pipelines for training, validation and testing
@@ -47,7 +48,7 @@ Experiments can be launched by calling `commander.py` and a set of input argumen
 
 Here is a typical launch command and some comments:
 
-* `python commander.py --dataset ecg --epochs 20 --num-classes 5 --root-dir ecg_data  --model-name resnet1d_10 --batch-size 128 --lr 0.001 --scheduler ReduceLROnPlateau --optimizer adam --lr-decay 0.5 --step 15 --workers 4 --tensorboard --sampler equal --version bump` 
+* `python commander.py --dataset ecg --epochs 20 --num-classes 5 --root-dir ecg_data  --model-name resnet1d_10 --batch-size 128 --lr 0.001 --scheduler ReduceLROnPlateau --optimizer adam --lr-decay 0.5 --step 15 --workers 1 --tensorboard --sampler equal --version bump` 
   + this experiment is on the _ecg_ dataset which can be found in `--root-dir/ecg` trained over _resnet1d_10_. It optimizes with _adam_ with initial learning rate ( `--lr` ) of `1e-3` which is decayed by half whenever the `--scheduler` _ReduceLRonPlateau_ does not see an improvement in the validation accuracy for more than `--step` epochs. Input sequences are of size 187. In addition it saves intermediate results to `--tensorboard` .
   + when debugging you can add the `--short-run` argument which performs training and validation epochs of 10 mini-batches. This allows testing your entire pipeline before launching an experiment
   + if you want to resume a previously paused experiment you can use the `--resume` flag which can continue the training from _best_, _latest_ or a specifically designated epoch.
