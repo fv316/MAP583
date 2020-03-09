@@ -48,13 +48,13 @@ Experiments can be launched by calling `commander.py` and a set of input argumen
 
 Here is a typical launch command and some comments:
 
-* `python commander.py --dataset ecg --epochs 20 --num-classes 5 --root-dir ecg_data  --model-name resnet1d_10 --batch-size 128 --lr 0.001 --scheduler ReduceLROnPlateau --optimizer adam --lr-decay 0.5 --step 15 --workers 1 --tensorboard --sampler equal --version bump` 
-  + this experiment is on the _ecg_ dataset which can be found in `--root-dir/ecg` trained over _resnet1d_10_. It optimizes with _adam_ with initial learning rate ( `--lr` ) of `1e-3` which is decayed by half whenever the `--scheduler` _ReduceLRonPlateau_ does not see an improvement in the validation accuracy for more than `--step` epochs. Input sequences are of size 187. In addition it saves intermediate results to `--tensorboard` .
+* `python commander.py --dataset ecg --epochs 20 --root-dir ecg_data --model-name resnet1d_10 --batch-size 128 --lr 0.001 --scheduler ReduceLROnPlateau --optimizer adam --lr-decay 0.5 --step 15 --workers 1 --tensorboard --sampler equal --version bump` 
+  + this experiment is on the _ecg_ (or _ecg_bin_) dataset which can be found in `--root-dir/ecg` trained over _resnet1d_10_. It optimizes with _adam_ with initial learning rate ( `--lr` ) of `1e-3` which is decayed by half whenever the `--scheduler` _ReduceLRonPlateau_ does not see an improvement in the validation accuracy for more than `--step` epochs. Input sequences are of size 187. In addition it saves intermediate results to `--tensorboard` .
   + when debugging you can add the `--short-run` argument which performs training and validation epochs of 10 mini-batches. This allows testing your entire pipeline before launching an experiment
   + if you want to resume a previously paused experiment you can use the `--resume` flag which can continue the training from _best_, _latest_ or a specifically designated epoch.
   + if you want to use your model only for evaluation on the test set, add the `--test` flag. When doing this, ensure that the `--resume` flag is also being used (as well as the correct model name) otherwise testing will be done with an untrained model.
   + for unbalanced data sets the `--sampler` flag can be used to up-sample, alternatively `--class-balance` can be used to penalize errors in under-represented classes more. The two flags are mutually exclusive.
-  + to manage different runs of the same model, use `--version-latest` to run on the last run or `--version-bump` to create a new run.
+  + to manage different runs of the same model, use `--version latest` to run on the last run or `--version bump` to create a new run.
 
 Here are some more typical launch commands:
 
